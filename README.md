@@ -1,6 +1,8 @@
 Expressive Configuration Manager
 ================================
 
+[![Build Status](https://travis-ci.org/mtymek/expressive-config-manager.svg?branch=master)](https://travis-ci.org/mtymek/expressive-config-manager)
+
 Lightweight library for collecting and merging configuration from different sources. 
 
 It is designed for [zend-expressive](https://github.com/zendframework/zend-expressive) 
