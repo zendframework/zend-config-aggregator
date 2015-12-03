@@ -58,18 +58,7 @@ class ConfigManager
         return $mergedConfig;
     }
 
-    private function loadConfigFromFiles(array $configFiles)
-    {
-        $config = [];
-        // Load configuration from autoload path
-        foreach ($configFiles as $file) {
-            $config = ArrayUtils::merge($config, include $file);
-        }
-        return $config;
-    }
-
     public function __construct(
-        array $configFiles,
         array $providers = [],
         $cachedConfigFile = 'data/cache/app_config.php'
     ) {
@@ -79,10 +68,7 @@ class ConfigManager
             return;
         }
 
-        $config = ArrayUtils::merge(
-            $this->loadConfigFromProviders($providers),
-            $this->loadConfigFromFiles($configFiles)
-        );
+        $config = $this->loadConfigFromProviders($providers);
 
         // Cache config if enabled
         if (isset($config['config_cache_enabled']) && $config['config_cache_enabled'] === true) {
