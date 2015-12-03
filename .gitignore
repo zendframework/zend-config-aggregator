@@ -1,0 +1,5 @@
+vendor/
+clover.xml
+composer.lock
+coveralls-upload.json
+

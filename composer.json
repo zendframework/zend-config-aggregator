@@ -1,0 +1,38 @@
+{
+    "name": "mtymek/expressive-config-manager",
+    "description": "Lightweight library for merging and caching application config",
+    "type": "library",
+    "license": "BSD 3-Clause",
+    "authors": [
+        {
+            "name": "Mateusz Tymek",
+            "email": "mtymek@gmail.com"
+        }
+    ],
+    "require": {
+        "zendframework/zend-stdlib": "^2.7"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.7",
+        "squizlabs/php_codesniffer": "^2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Zend\\Expressive\\ConfigManager\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ZendTest\\Expressive\\ConfigManager\\": "test/"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@cs",
+            "@test"
+        ],
+        "cs": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "phpunit"
+    }
+}
