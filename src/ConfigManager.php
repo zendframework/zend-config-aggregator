@@ -55,7 +55,7 @@ class ConfigManager
     ) {
         if (is_file($cachedConfigFile)) {
             // Try to load the cached config
-            $this->config = json_decode(file_get_contents($cachedConfigFile), true);
+            $this->config = include $cachedConfigFile;
             return;
         }
 
@@ -66,7 +66,7 @@ class ConfigManager
 
         // Cache config if enabled
         if (isset($config['config_cache_enabled']) && $config['config_cache_enabled'] === true) {
-            file_put_contents($cachedConfigFile, json_encode($config));
+            file_put_contents($cachedConfigFile, '<?php return ' . var_export($config, true) . ";\n");
         }
 
         // Return an ArrayObject so we can inject the config as a service in Aura.Di
