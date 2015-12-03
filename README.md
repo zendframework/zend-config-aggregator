@@ -67,15 +67,12 @@ $configManager = new ConfigManager(
 ### Config providers
 
 On top of merging files, `ConfigManager` can also add configuration read from
-objects implementing `ConfigProviderInterface`:
+config providers - callables returning array:
 
 ```php
 class AppConfigProvider implements ConfigProviderInterface
-{
-    /**
-     * @return array|ArrayObject
-     */
-    public function getConfig()
+{   
+    public function __invoke()
     {
         return ['foo' => 'bar'];
     }
