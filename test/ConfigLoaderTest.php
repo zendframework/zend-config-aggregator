@@ -6,8 +6,8 @@ use ArrayObject;
 use PHPUnit_Framework_TestCase;
 use StdClass;
 use Zend\Expressive\ConfigManager\ConfigManager;
+use Zend\Expressive\ConfigManager\GlobFileProvider;
 use Zend\Expressive\ConfigManager\InvalidConfigProviderException;
-use Zend\Stdlib\Glob;
 use ZendTest\Expressive\ConfigManager\Resources\BarConfigProvider;
 use ZendTest\Expressive\ConfigManager\Resources\FooConfigProvider;
 
@@ -64,7 +64,8 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
     public function testConfigManagerMergesConfigFromFiles()
     {
         $loader = new ConfigManager(
-            Glob::glob('test/Resources/config/{{,*.}global,{,*.}local}.php', Glob::GLOB_BRACE)
+            [],
+            [new GlobFileProvider(__DIR__ . '/Resources/config/{{,*.}global,{,*.}local}.php')]
         );
         $config = $loader->getMergedConfig();
         $this->assertEquals(['fruit' => 'banana', 'vegetable' => 'potato'], (array)$config);
