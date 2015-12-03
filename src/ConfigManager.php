@@ -12,30 +12,40 @@ class ConfigManager
      */
     private $config;
 
+    private function resolveProvider($provider)
+    {
+        if (is_string($provider)) {
+            if (!class_exists($provider)) {
+                throw new RuntimeException("Cannot read config from $provider - class cannot be loaded.");
+            }
+            $provider = new $provider();
+        }
+
+        if (!is_callable($provider)) {
+            throw new RuntimeException(
+                sprintf("Cannot read config from %s - config provider must be callable.", get_class($provider))
+            );
+        }
+
+        return $provider;
+    }
+
     private function loadConfigFromProviders(array $providers)
     {
-        $config = [];
-        foreach ($providers as $providerClass) {
-            if (!class_exists($providerClass)) {
-                throw new RuntimeException("Cannot read config from $providerClass - class cannot be loaded.");
-            }
-            $provider = new $providerClass();
-            if (!is_callable($provider)) {
+        $mergedConfig = [];
+        foreach ($providers as $provider) {
+            $provider = $this->resolveProvider($provider);
+
+            $config = $provider();
+            if (!is_array($config)) {
                 throw new RuntimeException(
-                    "Cannot read config from $providerClass - config provider must be callable."
+                    sprintf("Cannot read config from %s - __invoke() does not return array.", get_class($provider))
                 );
             }
 
-            $provided = $provider();
-            if (!is_array($provided)) {
-                throw new RuntimeException(
-                    "Cannot read config from $providerClass - __invoke() does not return array."
-                );
-            }
-
-            $config = ArrayUtils::merge($config, $provided);
+            $mergedConfig = ArrayUtils::merge($mergedConfig, $config);
         }
-        return $config;
+        return $mergedConfig;
     }
 
     private function loadConfigFromFiles(array $configFiles)
