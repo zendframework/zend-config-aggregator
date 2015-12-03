@@ -19,7 +19,10 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
 
     public function testConfigLoaderMergesConfigFromFiles()
     {
-        $loader = new ConfigManager(Glob::glob('test/Resources/config/{{,*.}global,{,*.}local}.php', Glob::GLOB_BRACE), []);
+        $loader = new ConfigManager(
+            Glob::glob('test/Resources/config/{{,*.}global,{,*.}local}.php', Glob::GLOB_BRACE),
+            []
+        );
         $config = $loader->getMergedConfig();
         $this->assertEquals(['fruit' => 'banana', 'vegetable' => 'potato'], (array)$config);
     }

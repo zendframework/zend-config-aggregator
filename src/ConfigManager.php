@@ -21,7 +21,9 @@ class ConfigManager
             }
             $provider = new $providerClass();
             if (!$provider instanceof ConfigProviderInterface) {
-                throw new RuntimeException("Cannot read config from $providerClass - class does not implement ConfigProviderInterface");
+                throw new RuntimeException(
+                    "Cannot read config from $providerClass - class does not implement ConfigProviderInterface"
+                );
             }
             $config = ArrayUtils::merge($config, $provider->getConfig());
         }
