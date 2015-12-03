@@ -46,6 +46,21 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => 'bar'], (array)$config);
     }
 
+    public function testProviderCanBeGenerator()
+    {
+        $loader = new ConfigManager(
+            [],
+            [
+                function () {
+                    yield ['foo' => 'bar'];
+                    yield ['baz' => 'bat'];
+                }
+            ]
+        );
+        $config = $loader->getMergedConfig();
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'bat'], (array)$config);
+    }
+
     public function testConfigManagerMergesConfigFromFiles()
     {
         $loader = new ConfigManager(

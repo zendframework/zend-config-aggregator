@@ -2,7 +2,7 @@
 namespace Zend\Expressive\ConfigManager;
 
 use ArrayObject;
-use RuntimeException;
+use Generator;
 use Zend\Stdlib\ArrayUtils;
 
 class ConfigManager
@@ -30,20 +30,30 @@ class ConfigManager
         return $provider;
     }
 
+    private function mergeConfig(&$mergedConfig, $provider, $config)
+    {
+        if (!is_array($config)) {
+            throw new InvalidConfigProviderException(
+                sprintf("Cannot read config from %s - it does not return array.", get_class($provider))
+            );
+        }
+
+        $mergedConfig = ArrayUtils::merge($mergedConfig, $config);
+    }
+
     private function loadConfigFromProviders(array $providers)
     {
         $mergedConfig = [];
         foreach ($providers as $provider) {
             $provider = $this->resolveProvider($provider);
-
             $config = $provider();
-            if (!is_array($config)) {
-                throw new InvalidConfigProviderException(
-                    sprintf("Cannot read config from %s - it does not return array.", get_class($provider))
-                );
+            if ($config instanceof Generator) {
+                foreach ($config as $cfg) {
+                    $this->mergeConfig($mergedConfig, $provider, $cfg);
+                }
+            } else {
+                $this->mergeConfig($mergedConfig, $provider, $config);
             }
-
-            $mergedConfig = ArrayUtils::merge($mergedConfig, $config);
         }
         return $mergedConfig;
     }
