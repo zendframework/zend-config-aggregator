@@ -40,7 +40,7 @@ class ConfigManager
         return $config;
     }
 
-    public function __construct(array $configFiles, array $providers, $cachedConfigFile = 'data/cache/app_config.php')
+    public function __construct(array $configFiles, array $providers = [], $cachedConfigFile = 'data/cache/app_config.php')
     {
         if (is_file($cachedConfigFile)) {
             // Try to load the cached config
