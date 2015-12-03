@@ -80,6 +80,8 @@ class AppConfigProvider implements ConfigProviderInterface
 }
 ```
 
+You can pass list of config providers as a second parameter when constructing object:
+
 ```php  
 $configManager = new ConfigManager(
     Glob::glob('config/{{,*.}global,{,*.}local}.php', Glob::GLOB_BRACE),
