@@ -16,13 +16,13 @@ class ConfigManager
     {
         if (is_string($provider)) {
             if (!class_exists($provider)) {
-                throw new RuntimeException("Cannot read config from $provider - class cannot be loaded.");
+                throw new InvalidConfigProviderException("Cannot read config from $provider - class cannot be loaded.");
             }
             $provider = new $provider();
         }
 
         if (!is_callable($provider)) {
-            throw new RuntimeException(
+            throw new InvalidConfigProviderException(
                 sprintf("Cannot read config from %s - config provider must be callable.", get_class($provider))
             );
         }
@@ -38,8 +38,8 @@ class ConfigManager
 
             $config = $provider();
             if (!is_array($config)) {
-                throw new RuntimeException(
-                    sprintf("Cannot read config from %s - __invoke() does not return array.", get_class($provider))
+                throw new InvalidConfigProviderException(
+                    sprintf("Cannot read config from %s - it does not return array.", get_class($provider))
                 );
             }
 
