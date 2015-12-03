@@ -3,6 +3,8 @@
 namespace ZendTest\Expressive\ConfigManager;
 
 use PHPUnit_Framework_TestCase;
+use RuntimeException;
+use StdClass;
 use Zend\Expressive\ConfigManager\ConfigManager;
 use Zend\Stdlib\Glob;
 use ZendTest\Expressive\ConfigManager\Resources\BarConfigProvider;
@@ -10,14 +12,26 @@ use ZendTest\Expressive\ConfigManager\Resources\FooConfigProvider;
 
 class ConfigManagerTest extends PHPUnit_Framework_TestCase
 {
-    public function testConfigLoaderMergesConfigFromProviders()
+    public function testConfigManagerRisesExceptionIfProviderClassDoesNotExist()
+    {
+        $this->setExpectedException(RuntimeException::class);
+        new ConfigManager([], [NonExistentConfigProvider::class]);
+    }
+
+    public function testConfigManagerRisesExceptionIfProviderIsNotCallable()
+    {
+        $this->setExpectedException(RuntimeException::class);
+        new ConfigManager([], [StdClass::class]);
+    }
+
+    public function testConfigManagerMergesConfigFromProviders()
     {
         $loader = new ConfigManager([], [FooConfigProvider::class, BarConfigProvider::class]);
         $config = $loader->getMergedConfig();
         $this->assertEquals(['foo' => 'bar', 'bar' => 'bat'], (array)$config);
     }
 
-    public function testConfigLoaderMergesConfigFromFiles()
+    public function testConfigManagerMergesConfigFromFiles()
     {
         $loader = new ConfigManager(
             Glob::glob('test/Resources/config/{{,*.}global,{,*.}local}.php', Glob::GLOB_BRACE)

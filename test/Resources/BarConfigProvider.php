@@ -3,14 +3,13 @@
 namespace ZendTest\Expressive\ConfigManager\Resources;
 
 use ArrayObject;
-use Zend\Expressive\ConfigManager\ConfigProviderInterface;
 
-class BarConfigProvider implements ConfigProviderInterface
+class BarConfigProvider
 {
     /**
      * @return array|ArrayObject
      */
-    public function getConfig()
+    public function __invoke()
     {
         return ['bar' => 'bat'];
     }

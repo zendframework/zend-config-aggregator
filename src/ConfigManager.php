@@ -20,12 +20,20 @@ class ConfigManager
                 throw new RuntimeException("Cannot read config from $providerClass - class cannot be loaded.");
             }
             $provider = new $providerClass();
-            if (!$provider instanceof ConfigProviderInterface) {
+            if (!is_callable($provider)) {
                 throw new RuntimeException(
-                    "Cannot read config from $providerClass - class does not implement ConfigProviderInterface"
+                    "Cannot read config from $providerClass - config provider must be callable."
                 );
             }
-            $config = ArrayUtils::merge($config, $provider->getConfig());
+
+            $provided = $provider();
+            if (!is_array($provided)) {
+                throw new RuntimeException(
+                    "Cannot read config from $providerClass - __invoke() does not return array."
+                );
+            }
+
+            $config = ArrayUtils::merge($config, $provided);
         }
         return $config;
     }
