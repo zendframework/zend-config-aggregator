@@ -55,7 +55,7 @@ class ConfigManager
     ) {
         if (is_file($cachedConfigFile)) {
             // Try to load the cached config
-            $this->config = include $cachedConfigFile;
+            $this->config = new ArrayObject(include $cachedConfigFile);
             return;
         }
 
