@@ -146,3 +146,23 @@ When caching is enabled, `ConfigManager` does not iterate config providers. Beca
 it is very fast, but after it is enabled you cannot do any changes to configuration without
 clearing the cache. **Caching should be used only in production environment**, and your 
 deployment process should clear the cache.
+
+### Generators
+
+Config providers can be written as generators. This way single callable can provide 
+multiple configurations:
+
+```php
+$configManager = new ConfigManager(
+    [
+        function () { 
+            foreach (Glob::glob('data/*.global.php', Glob::GLOB_BRACE) as $file) {
+                yield include $file;
+            } 
+        }        
+    ]
+);
+var_dump((array)$configManager->getMergedConfig());
+```
+
+`GlobFileProvider` is implemented using generators.
