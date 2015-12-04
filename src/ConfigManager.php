@@ -2,7 +2,7 @@
 namespace Zend\Expressive\ConfigManager;
 
 use ArrayObject;
-use RuntimeException;
+use Generator;
 use Zend\Stdlib\ArrayUtils;
 
 class ConfigManager
@@ -30,36 +30,35 @@ class ConfigManager
         return $provider;
     }
 
+    private function mergeConfig(&$mergedConfig, $provider, $config)
+    {
+        if (!is_array($config)) {
+            throw new InvalidConfigProviderException(
+                sprintf("Cannot read config from %s - it does not return array.", get_class($provider))
+            );
+        }
+
+        $mergedConfig = ArrayUtils::merge($mergedConfig, $config);
+    }
+
     private function loadConfigFromProviders(array $providers)
     {
         $mergedConfig = [];
         foreach ($providers as $provider) {
             $provider = $this->resolveProvider($provider);
-
             $config = $provider();
-            if (!is_array($config)) {
-                throw new InvalidConfigProviderException(
-                    sprintf("Cannot read config from %s - it does not return array.", get_class($provider))
-                );
+            if ($config instanceof Generator) {
+                foreach ($config as $cfg) {
+                    $this->mergeConfig($mergedConfig, $provider, $cfg);
+                }
+            } else {
+                $this->mergeConfig($mergedConfig, $provider, $config);
             }
-
-            $mergedConfig = ArrayUtils::merge($mergedConfig, $config);
         }
         return $mergedConfig;
     }
 
-    private function loadConfigFromFiles(array $configFiles)
-    {
-        $config = [];
-        // Load configuration from autoload path
-        foreach ($configFiles as $file) {
-            $config = ArrayUtils::merge($config, include $file);
-        }
-        return $config;
-    }
-
     public function __construct(
-        array $configFiles,
         array $providers = [],
         $cachedConfigFile = 'data/cache/app_config.php'
     ) {
@@ -69,10 +68,7 @@ class ConfigManager
             return;
         }
 
-        $config = ArrayUtils::merge(
-            $this->loadConfigFromProviders($providers),
-            $this->loadConfigFromFiles($configFiles)
-        );
+        $config = $this->loadConfigFromProviders($providers);
 
         // Cache config if enabled
         if (isset($config['config_cache_enabled']) && $config['config_cache_enabled'] === true) {

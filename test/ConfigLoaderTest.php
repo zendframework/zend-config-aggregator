@@ -7,7 +7,6 @@ use PHPUnit_Framework_TestCase;
 use StdClass;
 use Zend\Expressive\ConfigManager\ConfigManager;
 use Zend\Expressive\ConfigManager\InvalidConfigProviderException;
-use Zend\Stdlib\Glob;
 use ZendTest\Expressive\ConfigManager\Resources\BarConfigProvider;
 use ZendTest\Expressive\ConfigManager\Resources\FooConfigProvider;
 
@@ -16,18 +15,18 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
     public function testConfigManagerRisesExceptionIfProviderClassDoesNotExist()
     {
         $this->setExpectedException(InvalidConfigProviderException::class);
-        new ConfigManager([], [NonExistentConfigProvider::class]);
+        new ConfigManager([NonExistentConfigProvider::class]);
     }
 
     public function testConfigManagerRisesExceptionIfProviderIsNotCallable()
     {
         $this->setExpectedException(InvalidConfigProviderException::class);
-        new ConfigManager([], [StdClass::class]);
+        new ConfigManager([StdClass::class]);
     }
 
     public function testConfigManagerMergesConfigFromProviders()
     {
-        $loader = new ConfigManager([], [FooConfigProvider::class, BarConfigProvider::class]);
+        $loader = new ConfigManager([FooConfigProvider::class, BarConfigProvider::class]);
         $config = $loader->getMergedConfig();
         $this->assertEquals(['foo' => 'bar', 'bar' => 'bat'], (array)$config);
     }
@@ -35,7 +34,6 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
     public function testProviderCanBeClosure()
     {
         $loader = new ConfigManager(
-            [],
             [
                 function () {
                     return ['foo' => 'bar'];
@@ -46,13 +44,18 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => 'bar'], (array)$config);
     }
 
-    public function testConfigManagerMergesConfigFromFiles()
+    public function testProviderCanBeGenerator()
     {
         $loader = new ConfigManager(
-            Glob::glob('test/Resources/config/{{,*.}global,{,*.}local}.php', Glob::GLOB_BRACE)
+            [
+                function () {
+                    yield ['foo' => 'bar'];
+                    yield ['baz' => 'bat'];
+                }
+            ]
         );
         $config = $loader->getMergedConfig();
-        $this->assertEquals(['fruit' => 'banana', 'vegetable' => 'potato'], (array)$config);
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'bat'], (array)$config);
     }
 
     public function testConfigManagerCanCacheConfig()
@@ -60,7 +63,6 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
         $cacheFile = tempnam(sys_get_temp_dir(), 'expressive_config_loader');
         unlink($cacheFile);
         new ConfigManager(
-            [],
             [
                 function () {
                     return ['foo' => 'bar', 'config_cache_enabled' => true];
@@ -83,7 +85,6 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
             '<?php return ' . var_export(['foo' => 'bar', 'config_cache_enabled' => true], true) . ";\n"
         );
         $configManager = new ConfigManager(
-            [],
             [],
             $cacheFile
         );
