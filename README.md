@@ -65,8 +65,9 @@ array(3) {
 
 ### Config providers
 
-ConfigManager works by aggregating "Config Providers". Each provider should be a callable,
-returning configuration array (or generator) to be merged.
+ConfigManager works by aggregating "Config Providers" passed when creating object. 
+Each provider should be a callable, returning configuration array  (or generator) 
+to be merged.
 
 ```php
 $configManager = new ConfigManager(
@@ -122,3 +123,26 @@ array(4) {
   }
 }
 ```
+
+### Caching
+
+In order to enable config cache, you need to add `config_cache_enabled` key to the config,
+and set it to `TRUE`.
+
+By default, cache is stored in `data/cache/app_config.php` file. This can be overridden
+using second argument of `ConfigManager`'s constructor:
+
+```php
+$configManager = new ConfigManager(
+    [
+        function () { return ['config_cache_enabled' => true]; },
+        new GlobFileProvider('*.global.php'),
+    ],
+    'data/config-cache.php'
+);
+```
+
+When caching is enabled, `ConfigManager` does not iterate config providers. Because of that
+it is very fast, but after it is enabled you cannot do any changes to configuration without
+clearing the cache. **Caching should be used only in production environment**, and your 
+deployment process should clear the cache.
