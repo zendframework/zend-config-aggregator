@@ -13,80 +13,112 @@ Usage
 
 ### Config files
 
-Each config file should return plain PHP array:
-
-```php
-// config1.php
-return [
-    'key1' => 'foo',
-    'key2' => 'bar',
-];
-
-// config2.php
-return [
-    'key1' => 'baz',
-    'key3' => 'foobar',
-];
-```
+At the basic level, ConfigManager can be used to merge PHP-based configuration files: 
 
 ```php
 use Zend\Expressive\ConfigManager\ConfigManager;
+use Zend\Expressive\ConfigManager\GlobFileProvider;
 
 $configManager = new ConfigManager(
-    ['config1.php', 'config2.php']
+    [
+        new GlobFileProvider('*.global.php')
+    ]
 );
+
 var_dump((array)$configManager->getMergedConfig());
 ```
 
-`ConfigManager` will combine arrays from all files together, so code above will 
-generate following output:
-
-```
-// output:
-array(3) {
-  'key1' =>
-  string(3) "baz"
-  'key2' =>
-  string(3) "bar"
-  'key3' =>
-  string(6) "foobar"
-}
-```
-
-You can use it together with `glob` to read all files from certain directory:
+Each file should return plain PHP array:
 
 ```php
-use Zend\Stdlib\Glob;
+// db.global.php
+return [
+    'db' => [
+        'dsn' => 'mysql:...',
+    ],    
+];
 
-// loads all *.global.php and *.local.php files from config/ directory  
-$configManager = new ConfigManager(
-    Glob::glob('config/{{,*.}global,{,*.}local}.php', Glob::GLOB_BRACE)
-);
+// cache.global.php
+return [
+    'cache_storage' => 'redis',
+    'redis' => [ ... ],
+];
+```
+
+Result:
+
+```php
+array(3) {
+  'db' =>
+  array(1) {
+    'dsn' =>
+    string(9) "mysql:..."
+  }
+  'cache_storage' =>
+  string(5) "redis"
+  'redis' =>
+  array(0) {
+     ...
+  }
+}
 ```
 
 ### Config providers
 
-On top of merging files, `ConfigManager` can also add configuration read from
-config providers - callables returning array:
+ConfigManager works by aggregating "Config Providers". Each provider should be a callable,
+returning configuration array (or generator) to be merged.
 
 ```php
-class AppConfigProvider implements ConfigProviderInterface
-{   
+$configManager = new ConfigManager(
+    [
+        function () { return ['foo' => 'bar']; },
+        new GlobFileProvider('*.global.php'),
+    ]
+);
+var_dump((array)$configManager->getMergedConfig());
+```
+
+If provider is a class name, it is automatically instantiated. This can be used to mimic
+ZF2 module system - you can specify list of config classes from different packages,
+and aggregated configuration will be available to your application. Or, as a library
+owner you can distribute config class with default values.
+
+Example:
+
+
+```php
+class ApplicationConfig
+{
     public function __invoke()
     {
         return ['foo' => 'bar'];
     }
 }
-```
 
-You can pass list of config providers as a second parameter when constructing object:
-
-```php  
 $configManager = new ConfigManager(
-    Glob::glob('config/{{,*.}global,{,*.}local}.php', Glob::GLOB_BRACE),
-    [AppConfigProvider::class, BlogConfigProvider::class]
+    [
+        ApplicationConfig::class,
+        new GlobFileProvider('*.global.php'),
+    ]
 );
+var_dump((array)$configManager->getMergedConfig());
 ```
 
-This functionality allows behavior similar to ZF2 modules - your library can be 
-shipped with configuration class that provides default values. 
+Output from both examples will be the same:
+
+```php
+array(4) {
+  'foo' =>
+  string(3) "bar"
+  'db' =>
+  array(1) {
+    'dsn' =>
+    string(9) "mysql:..."
+  }
+  'cache_storage' =>
+  string(5) "redis"
+  'redis' =>
+  array(0) {
+  }
+}
+```
