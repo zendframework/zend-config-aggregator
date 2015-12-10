@@ -1,14 +1,13 @@
 <?php
 namespace Zend\Expressive\ConfigManager;
 
-use ArrayObject;
 use Generator;
 use Zend\Stdlib\ArrayUtils;
 
 class ConfigManager
 {
     /**
-     * @var ArrayObject
+     * @var array
      */
     private $config;
 
@@ -64,7 +63,7 @@ class ConfigManager
     ) {
         if (is_file($cachedConfigFile)) {
             // Try to load the cached config
-            $this->config = new ArrayObject(include $cachedConfigFile);
+            $this->config = include $cachedConfigFile;
             return;
         }
 
@@ -75,13 +74,11 @@ class ConfigManager
             file_put_contents($cachedConfigFile, '<?php return ' . var_export($config, true) . ";\n");
         }
 
-        // Return an ArrayObject so we can inject the config as a service in Aura.Di
-        // and still use array checks like ``is_array``.
-        $this->config = new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);
+        $this->config = $config;
     }
 
     /**
-     * @return ArrayObject
+     * @return array
      */
     public function getMergedConfig()
     {
