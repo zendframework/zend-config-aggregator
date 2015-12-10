@@ -2,7 +2,6 @@
 
 namespace ZendTest\Expressive\ConfigManager;
 
-use ArrayObject;
 use PHPUnit_Framework_TestCase;
 use StdClass;
 use Zend\Expressive\ConfigManager\ConfigManager;
@@ -28,7 +27,7 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
     {
         $loader = new ConfigManager([FooConfigProvider::class, BarConfigProvider::class]);
         $config = $loader->getMergedConfig();
-        $this->assertEquals(['foo' => 'bar', 'bar' => 'bat'], (array)$config);
+        $this->assertEquals(['foo' => 'bar', 'bar' => 'bat'], $config);
     }
 
     public function testProviderCanBeClosure()
@@ -41,7 +40,7 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
             ]
         );
         $config = $loader->getMergedConfig();
-        $this->assertEquals(['foo' => 'bar'], (array)$config);
+        $this->assertEquals(['foo' => 'bar'], $config);
     }
 
     public function testProviderCanBeGenerator()
@@ -55,7 +54,7 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
             ]
         );
         $config = $loader->getMergedConfig();
-        $this->assertEquals(['foo' => 'bar', 'baz' => 'bat'], (array)$config);
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'bat'], $config);
     }
 
     public function testConfigManagerCanCacheConfig()
@@ -90,8 +89,8 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
         );
         $this->assertTrue(is_file($cacheFile));
         $cachedConfig = $configManager->getMergedConfig();
-        $this->assertInstanceOf(ArrayObject::class, $cachedConfig);
-        $this->assertEquals(['foo' => 'bar', 'config_cache_enabled' => true], (array)$cachedConfig);
+        $this->assertInternalType('array', $cachedConfig);
+        $this->assertEquals(['foo' => 'bar', 'config_cache_enabled' => true], $cachedConfig);
         unlink($cacheFile);
     }
 }
