@@ -25,7 +25,7 @@ $configManager = new ConfigManager(
     ]
 );
 
-var_dump((array)$configManager->getMergedConfig());
+var_dump($configManager->getMergedConfig());
 ```
 
 Each file should return plain PHP array:
@@ -76,7 +76,7 @@ $configManager = new ConfigManager(
         new GlobFileProvider('*.global.php'),
     ]
 );
-var_dump((array)$configManager->getMergedConfig());
+var_dump($configManager->getMergedConfig());
 ```
 
 If provider is a class name, it is automatically instantiated. This can be used to mimic
@@ -102,7 +102,7 @@ $configManager = new ConfigManager(
         new GlobFileProvider('*.global.php'),
     ]
 );
-var_dump((array)$configManager->getMergedConfig());
+var_dump($configManager->getMergedConfig());
 ```
 
 Output from both examples will be the same:
@@ -162,7 +162,7 @@ $configManager = new ConfigManager(
         }        
     ]
 );
-var_dump((array)$configManager->getMergedConfig());
+var_dump($configManager->getMergedConfig());
 ```
 
 `GlobFileProvider` is implemented using generators.
