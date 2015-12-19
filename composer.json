@@ -18,6 +18,10 @@
         "zendframework/zend-config": "^2.5",
         "zendframework/zend-servicemanager": "^2.6"
     },
+    "suggest": {
+        "zendframework/zend-config": "Allows loading configuration from XML, INI, YAML and JSON files",
+        "zendframework/zend-servicemanager": "Allows loading configuration from XML, INI, YAML and JSON files"
+    },
     "autoload": {
         "psr-4": {
             "Zend\\Expressive\\ConfigManager\\": "src/"
