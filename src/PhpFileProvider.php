@@ -4,7 +4,7 @@ namespace Zend\Expressive\ConfigManager;
 
 use Zend\Stdlib\Glob;
 
-class GlobFileProvider
+class PhpFileProvider
 {
     /** @var string */
     private $pattern;

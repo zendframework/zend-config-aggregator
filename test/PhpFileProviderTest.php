@@ -3,14 +3,14 @@
 namespace ZendTest\Expressive\ConfigManager;
 
 use PHPUnit_Framework_TestCase;
-use Zend\Expressive\ConfigManager\GlobFileProvider;
+use Zend\Expressive\ConfigManager\PhpFileProvider;
 use Zend\Stdlib\ArrayUtils;
 
-class GlobFileProviderTest extends PHPUnit_Framework_TestCase
+class PhpFileProviderTest extends PHPUnit_Framework_TestCase
 {
     public function testProviderLoadsConfigFromFiles()
     {
-        $provider = new GlobFileProvider(__DIR__ . '/Resources/config/{{,*.}global,{,*.}local}.php');
+        $provider = new PhpFileProvider(__DIR__ . '/Resources/config/{{,*.}global,{,*.}local}.php');
         $merged = [];
         foreach ($provider() as $item) {
             $merged = ArrayUtils::merge($merged, $item);
