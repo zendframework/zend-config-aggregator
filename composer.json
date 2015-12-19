@@ -14,7 +14,13 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^4.7",
-        "squizlabs/php_codesniffer": "^2.3"
+        "squizlabs/php_codesniffer": "^2.3",
+        "zendframework/zend-config": "^2.5",
+        "zendframework/zend-servicemanager": "^2.6"
+    },
+    "suggest": {
+        "zendframework/zend-config": "Allows loading configuration from XML, INI, YAML and JSON files",
+        "zendframework/zend-servicemanager": "Allows loading configuration from XML, INI, YAML and JSON files"
     },
     "autoload": {
         "psr-4": {
