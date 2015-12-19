@@ -17,11 +17,11 @@ At the basic level, ConfigManager can be used to merge PHP-based configuration f
 
 ```php
 use Zend\Expressive\ConfigManager\ConfigManager;
-use Zend\Expressive\ConfigManager\GlobFileProvider;
+use Zend\Expressive\ConfigManager\PhpFileProvider;
 
 $configManager = new ConfigManager(
     [
-        new GlobFileProvider('*.global.php')
+        new PhpFileProvider('*.global.php')
     ]
 );
 
@@ -73,7 +73,7 @@ to be merged.
 $configManager = new ConfigManager(
     [
         function () { return ['foo' => 'bar']; },
-        new GlobFileProvider('*.global.php'),
+        new PhpFileProvider('*.global.php'),
     ]
 );
 var_dump($configManager->getMergedConfig());
@@ -99,7 +99,7 @@ class ApplicationConfig
 $configManager = new ConfigManager(
     [
         ApplicationConfig::class,
-        new GlobFileProvider('*.global.php'),
+        new PhpFileProvider('*.global.php'),
     ]
 );
 var_dump($configManager->getMergedConfig());
@@ -136,7 +136,7 @@ using second argument of `ConfigManager`'s constructor:
 $configManager = new ConfigManager(
     [
         function () { return ['config_cache_enabled' => true]; },
-        new GlobFileProvider('*.global.php'),
+        new PhpFileProvider('*.global.php'),
     ],
     'data/config-cache.php'
 );
@@ -165,13 +165,13 @@ $configManager = new ConfigManager(
 var_dump($configManager->getMergedConfig());
 ```
 
-`GlobFileProvider` is implemented using generators.
+`PhpFileProvider` is implemented using generators.
 
 
 Available config providers
 --------------------------
 
-### GlobFileProvider
+### PhpFileProvider
  
 Loads configuration from PHP files returning arrays, like this one:
 ```php
@@ -187,7 +187,7 @@ Wildcards are supported:
 ```php
 $configManager = new ConfigManager(
     [
-        new GlobFileProvider('config/*.global.php'),        
+        new PhpFileProvider('config/*.global.php'),        
     ]
 );
 ```
