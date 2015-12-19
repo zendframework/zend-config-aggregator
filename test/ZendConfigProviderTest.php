@@ -14,7 +14,13 @@ class ZendConfigProviderTest extends PHPUnit_Framework_TestCase
         $config = $provider();
         $this->assertEquals(
             [
-                'database' => ['adapter' => 'pdo', 'host' => 'db.example.com', 'database' => 'dbproduction', 'user' => 'dbuser', 'password' => 'secret']
+                'database' => [
+                    'adapter' => 'pdo',
+                    'host' => 'db.example.com',
+                    'database' => 'dbproduction',
+                    'user' => 'dbuser',
+                    'password' => 'secret'
+                ]
             ],
             $config
         );
