@@ -166,3 +166,58 @@ var_dump((array)$configManager->getMergedConfig());
 ```
 
 `GlobFileProvider` is implemented using generators.
+
+
+Available config providers
+--------------------------
+
+### GlobFileProvider
+ 
+Loads configuration from PHP files returning arrays, like this one:
+```php
+return [
+    'db' => [
+        'dsn' => 'mysql:...',
+    ],    
+];
+```
+
+Wildcards are supported:  
+
+```php
+$configManager = new ConfigManager(
+    [
+        new GlobFileProvider('config/*.global.php'),        
+    ]
+);
+```
+
+Example above will merge all matching files from `config` directory - if you have 
+files like `app.global.php`, `database.global.php`, they will be loaded using this few 
+lines of code.
+
+Internally, `ZendStdlib\Glob` is used for resolving wildcards, meaning that you can 
+use more complex patterns (for instance: `'config/autoload/{{,*.}global,{,*.}local}.php'`), 
+that will work even on Windows platform. 
+    
+### ZendConfigProvider
+
+Sometimes using plain PHP files may be not enough - you may want to build your configuration 
+from multiple files of different formats: INI, YAML, or XML. For this purpose you can 
+leverage `ZendConfigProvider`:
+
+```php
+$configManager = new ConfigManager(
+    [
+        new ZendConfigProvider('*.global.json'),
+        new ZendConfigProvider('database.local.ini')
+    ]
+);
+```
+
+`ZendConfigProvider` accepts wildcards and autodetects config type based on file extension. 
+
+ZendConfigProvider requires two packages to be installed: `zendframework/zend-config` and 
+`zendframework/zend-servicemanager`. Some config readers (JSON, YAML) may need additional
+dependencies - please refer to [Zend Config Manual](http://framework.zend.com/manual/current/en/index.html#zend-config)
+for more details.
