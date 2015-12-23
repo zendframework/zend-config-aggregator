@@ -6,6 +6,8 @@ use Zend\Stdlib\ArrayUtils;
 
 class ConfigManager
 {
+    const ENABLE_CACHE = 'config_cache_enabled';
+
     /**
      * @var array
      */
@@ -63,14 +65,14 @@ class ConfigManager
     ) {
         if (is_file($cachedConfigFile)) {
             // Try to load the cached config
-            $this->config = include $cachedConfigFile;
+            $this->config = require $cachedConfigFile;
             return;
         }
 
         $config = $this->loadConfigFromProviders($providers);
 
         // Cache config if enabled
-        if (isset($config['config_cache_enabled']) && $config['config_cache_enabled'] === true) {
+        if (isset($config[static::ENABLE_CACHE]) && $config[static::ENABLE_CACHE] === true) {
             file_put_contents($cachedConfigFile, '<?php return ' . var_export($config, true) . ";\n");
         }
 

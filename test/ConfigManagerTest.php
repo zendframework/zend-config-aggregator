@@ -14,7 +14,7 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
     public function testConfigManagerRisesExceptionIfProviderClassDoesNotExist()
     {
         $this->setExpectedException(InvalidConfigProviderException::class);
-        new ConfigManager([NonExistentConfigProvider::class]);
+        new ConfigManager(['NonExistentConfigProvider']);
     }
 
     public function testConfigManagerRisesExceptionIfProviderIsNotCallable()
@@ -64,7 +64,7 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
         new ConfigManager(
             [
                 function () {
-                    return ['foo' => 'bar', 'config_cache_enabled' => true];
+                    return ['foo' => 'bar', ConfigManager::ENABLE_CACHE => true];
                 }
             ],
             $cacheFile
@@ -72,7 +72,7 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(is_file($cacheFile));
         $cachedConfig = include $cacheFile;
         $this->assertInternalType('array', $cachedConfig);
-        $this->assertEquals(['foo' => 'bar', 'config_cache_enabled' => true], $cachedConfig);
+        $this->assertEquals(['foo' => 'bar', ConfigManager::ENABLE_CACHE => true], $cachedConfig);
         unlink($cacheFile);
     }
 
@@ -81,7 +81,7 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
         $cacheFile = tempnam(sys_get_temp_dir(), 'expressive_config_loader');
         file_put_contents(
             $cacheFile,
-            '<?php return ' . var_export(['foo' => 'bar', 'config_cache_enabled' => true], true) . ";\n"
+            '<?php return ' . var_export(['foo' => 'bar', ConfigManager::ENABLE_CACHE => true], true) . ";\n"
         );
         $configManager = new ConfigManager(
             [],
@@ -90,7 +90,7 @@ class ConfigManagerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(is_file($cacheFile));
         $cachedConfig = $configManager->getMergedConfig();
         $this->assertInternalType('array', $cachedConfig);
-        $this->assertEquals(['foo' => 'bar', 'config_cache_enabled' => true], $cachedConfig);
+        $this->assertEquals(['foo' => 'bar', ConfigManager::ENABLE_CACHE => true], $cachedConfig);
         unlink($cacheFile);
     }
 }
