@@ -21,7 +21,7 @@ use Zend\Expressive\ConfigManager\PhpFileProvider;
 
 $configManager = new ConfigManager(
     [
-        new PhpFileProvider('*.global.php')
+        new PhpFileProvider('*.global.php'),
     ]
 );
 
@@ -63,6 +63,8 @@ array(3) {
 }
 ```
 
+Configuration is merged in the same order as it is passed, with later entries having precedence.
+
 ### Config providers
 
 ConfigManager works by aggregating "Config Providers" passed when creating object. 
@@ -85,7 +87,6 @@ and aggregated configuration will be available to your application. Or, as a lib
 owner you can distribute config class with default values.
 
 Example:
-
 
 ```php
 class ApplicationConfig
@@ -127,7 +128,7 @@ array(4) {
 ### Caching
 
 In order to enable config cache, you need to add `config_cache_enabled` key to the config,
-and set it to `TRUE`.
+and set it to `TRUE` (use `ConfigManager::ENABLE_CACHE` constant for convenience)
 
 By default, cache is stored in `data/cache/app_config.php` file. This can be overridden
 using second argument of `ConfigManager`'s constructor:
@@ -135,7 +136,7 @@ using second argument of `ConfigManager`'s constructor:
 ```php
 $configManager = new ConfigManager(
     [
-        function () { return ['config_cache_enabled' => true]; },
+        function () { return [ConfigManager::ENABLE_CACHE => true]; },
         new PhpFileProvider('*.global.php'),
     ],
     'data/config-cache.php'
@@ -210,7 +211,7 @@ leverage `ZendConfigProvider`:
 $configManager = new ConfigManager(
     [
         new ZendConfigProvider('*.global.json'),
-        new ZendConfigProvider('database.local.ini')
+        new ZendConfigProvider('database.local.ini'),
     ]
 );
 ```
