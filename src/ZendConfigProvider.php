@@ -3,10 +3,11 @@
 namespace Zend\Expressive\ConfigManager;
 
 use Zend\Config\Factory as ConfigFactory;
-use Zend\Stdlib\Glob;
 
 class ZendConfigProvider
 {
+    use GlobTrait;
+
     /** @var string */
     private $pattern;
 
@@ -20,7 +21,7 @@ class ZendConfigProvider
 
     public function __invoke()
     {
-        $files = Glob::glob($this->pattern, Glob::GLOB_BRACE);
+        $files = $this->glob($this->pattern);
         return ConfigFactory::fromFiles($files);
     }
 }

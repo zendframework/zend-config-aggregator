@@ -2,7 +2,8 @@
 namespace Zend\Expressive\ConfigManager;
 
 use Generator;
-use Zend\Stdlib\ArrayUtils;
+use Zend\Stdlib\ArrayUtils\MergeRemoveKey;
+use Zend\Stdlib\ArrayUtils\MergeReplaceKeyInterface;
 
 class ConfigManager
 {
@@ -31,6 +32,33 @@ class ConfigManager
         return $provider;
     }
 
+    /**
+     * Copied from https://github.com/zendframework/zend-stdlib/blob/master/src/ArrayUtils.php#L269
+     */
+    private function mergeArray(array $a, array $b)
+    {
+        foreach ($b as $key => $value) {
+            if ($value instanceof MergeReplaceKeyInterface) {
+                $a[$key] = $value->getData();
+            } elseif (isset($a[$key]) || array_key_exists($key, $a)) {
+                if ($value instanceof MergeRemoveKey) {
+                    unset($a[$key]);
+                } elseif (is_int($key)) {
+                    $a[] = $value;
+                } elseif (is_array($value) && is_array($a[$key])) {
+                    $a[$key] = $this->mergeArray($a[$key], $value);
+                } else {
+                    $a[$key] = $value;
+                }
+            } else {
+                if (!$value instanceof MergeRemoveKey) {
+                    $a[$key] = $value;
+                }
+            }
+        }
+        return $a;
+    }
+
     private function mergeConfig(&$mergedConfig, $provider, $config)
     {
         if (!is_array($config)) {
@@ -39,7 +67,7 @@ class ConfigManager
             );
         }
 
-        $mergedConfig = ArrayUtils::merge($mergedConfig, $config);
+        $mergedConfig = $this->mergeArray($mergedConfig, $config);
     }
 
     private function loadConfigFromProviders(array $providers)

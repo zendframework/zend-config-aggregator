@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Removed
   
 - Nothing.
+- #10 removes the dependency on zend-stdlib.
   
 ### Fixed
 

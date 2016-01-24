@@ -2,10 +2,10 @@
 
 namespace Zend\Expressive\ConfigManager;
 
-use Zend\Stdlib\Glob;
-
 class PhpFileProvider
 {
+    use GlobTrait;
+
     /** @var string */
     private $pattern;
 
@@ -19,7 +19,7 @@ class PhpFileProvider
 
     public function __invoke()
     {
-        foreach (Glob::glob($this->pattern, Glob::GLOB_BRACE) as $file) {
+        foreach ($this->glob($this->pattern) as $file) {
             yield include $file;
         }
     }
