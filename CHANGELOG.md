@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 0.3.1 - 24-12-2016
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Fixed required PHP version in composer.json file.
 
 ## 0.3.0 - 24-12-2016
   
@@ -15,8 +32,7 @@ All notable changes to this project will be documented in this file, in reverse 
 - Nothing.
   
 ### Removed
-  
-- Nothing.
+
 - #10 removes the dependency on zend-stdlib.
   
 ### Fixed
