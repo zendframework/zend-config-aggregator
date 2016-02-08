@@ -127,11 +127,8 @@ array(4) {
 
 ### Caching
 
-In order to enable config cache, you need to add `config_cache_enabled` key to the config,
-and set it to `TRUE` (use `ConfigManager::ENABLE_CACHE` constant for convenience)
-
-By default, cache is stored in `data/cache/app_config.php` file. This can be overridden
-using second argument of `ConfigManager`'s constructor:
+In order to enable configuration cache, pass cache file name as a second parameter
+to `ConfigManager` constructor:
 
 ```php
 $configManager = new ConfigManager(
@@ -141,6 +138,17 @@ $configManager = new ConfigManager(
     ],
     'data/config-cache.php'
 );
+```
+
+When cache file is specified, you will also need to add `config_cache_enabled` key to 
+the config, and set it to `TRUE` (use `ConfigManager::ENABLE_CACHE` constant for convenience).
+This allows to enable cache during deployment by simply putting extra `*.local.php` file
+in config directory:
+
+```php
+return [
+    ConfigManager::ENABLE_CACHE` => true,
+];
 ```
 
 When caching is enabled, `ConfigManager` does not iterate config providers. Because of that

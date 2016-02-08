@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 0.4.0 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- config cache file name defaults to NULL now, in order to avoid potentially unwanted disk access.
+    Setting it to NULL will disable cache, even if `config_cache_enabled` is set to TRUE.
+
+### Fixed
+
+- Nothing.
+
+
 ## 0.3.1 - 24-12-2016
 
 ### Added

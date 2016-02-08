@@ -89,9 +89,9 @@ class ConfigManager
 
     public function __construct(
         array $providers = [],
-        $cachedConfigFile = 'data/cache/app_config.php'
+        $cachedConfigFile = null
     ) {
-        if (is_file($cachedConfigFile)) {
+        if (null !== $cachedConfigFile && is_file($cachedConfigFile)) {
             // Try to load the cached config
             $this->config = require $cachedConfigFile;
             return;
@@ -100,7 +100,10 @@ class ConfigManager
         $config = $this->loadConfigFromProviders($providers);
 
         // Cache config if enabled
-        if (isset($config[static::ENABLE_CACHE]) && $config[static::ENABLE_CACHE] === true) {
+        if (null !== $cachedConfigFile
+            && isset($config[static::ENABLE_CACHE])
+            && $config[static::ENABLE_CACHE] === true
+        ) {
             file_put_contents($cachedConfigFile, '<?php return ' . var_export($config, true) . ";\n");
         }
 
