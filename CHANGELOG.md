@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.4.0 - TBD
+## 0.4.0 - 17-03-2016
 
 ### Added
 
@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file, in reverse 
 - Nothing.
 
 
-## 0.3.1 - 24-12-2016
+## 0.3.1 - 24-01-2016
 
 ### Added
 
