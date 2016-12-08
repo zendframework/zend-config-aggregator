@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'vegetable' => 'potato'
+    'vegetable' => 'potato',
 ];
