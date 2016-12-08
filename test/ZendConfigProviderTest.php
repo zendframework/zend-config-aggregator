@@ -1,12 +1,18 @@
 <?php
+/**
+ * @see       https://github.com/zendframework/zend-config-aggregator for the canonical source repository
+ * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Mateusz Tymek (http://mateusztymek.pl)
+ * @license   https://github.com/zendframework/zend-config-aggregator/blob/master/LICENSE.md New BSD License
+ */
 
-namespace ZendTest\Expressive\ConfigManager;
+namespace ZendTest\ConfigAggregator;
 
-use PHPUnit_Framework_TestCase;
-use Zend\Expressive\ConfigManager\ZendConfigProvider;
+use PHPUnit_Framework_TestCase as TestCase;
+use Zend\ConfigAggregator\ZendConfigProvider;
 use Zend\Stdlib\ArrayUtils;
 
-class ZendConfigProviderTest extends PHPUnit_Framework_TestCase
+class ZendConfigProviderTest extends TestCase
 {
     public function testProviderLoadsConfigFromFiles()
     {
@@ -19,8 +25,8 @@ class ZendConfigProviderTest extends PHPUnit_Framework_TestCase
                     'host' => 'db.example.com',
                     'database' => 'dbproduction',
                     'user' => 'dbuser',
-                    'password' => 'secret'
-                ]
+                    'password' => 'secret',
+                ],
             ],
             $config
         );

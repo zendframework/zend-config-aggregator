@@ -1,5 +1,5 @@
 {
-    "name": "mtymek/expressive-config-manager",
+    "name": "zendframework/zend-config-aggregator",
     "description": "Lightweight library for merging and caching application config",
     "type": "library",
     "license": "BSD 3-Clause",
@@ -10,35 +10,41 @@
         }
     ],
     "require": {
-        "php": "^5.5 || ^7.0"
+        "php": "^5.6 || ^7.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.7",
-        "squizlabs/php_codesniffer": "^2.3",
-        "zendframework/zend-config": "^2.5",
-        "zendframework/zend-servicemanager": "^2.6"
+        "phpunit/phpunit": "^5.7",
+        "zendframework/zend-coding-standard": "~1.0.0",
+        "zendframework/zend-config": "^2.6",
+        "zendframework/zend-servicemanager": "^2.7.7 || ^3.1.1",
+        "malukenho/docheader": "^0.1.5",
+        "mikey179/vfsStream": "^1.6"
     },
     "suggest": {
         "zendframework/zend-stdlib": "Allows removing configuration keys and globbing on Windows platform",
-        "zendframework/zend-config": "Allows loading configuration from XML, INI, YAML and JSON files"
+        "zendframework/zend-config": "Allows loading configuration from XML, INI, YAML, and JSON files"
     },
     "autoload": {
         "psr-4": {
-            "Zend\\Expressive\\ConfigManager\\": "src/"
+            "Zend\\ConfigAggregator\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ZendTest\\Expressive\\ConfigManager\\": "test/"
+            "ZendTest\\ConfigAggregator\\": "test/"
         }
     },
     "scripts": {
         "check": [
+            "@license-check",
             "@cs",
             "@test"
         ],
         "cs": "phpcs",
         "cs-fix": "phpcbf",
-        "test": "phpunit"
+        "license-check": "vendor/bin/docheader check src/",
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --coverage-clover clover.xml",
+        "upload-coverage": "coveralls -v"
     }
 }
