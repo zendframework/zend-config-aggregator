@@ -37,10 +37,10 @@
     "scripts": {
         "check": [
             "@license-check",
-            "@cs",
+            "@cs-check",
             "@test"
         ],
-        "cs": "phpcs",
+        "cs-check": "phpcs",
         "cs-fix": "phpcbf",
         "license-check": "vendor/bin/docheader check src/",
         "test": "phpunit --colors=always",
