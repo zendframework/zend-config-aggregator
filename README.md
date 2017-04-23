@@ -2,8 +2,6 @@
 
 [![Build Status](https://travis-ci.org/zendframework/zend-config-aggregator.svg?branch=master)](https://travis-ci.org/zendframework/zend-config-aggregator)
 
-(Based on [mtymek/expressive-config-manager](https://github.com/mtymek/expressive-config-manager).)
-
 Lightweight library for collecting and merging configuration from different sources. 
 
 While designed for [Expressive](https://github.com/zendframework/zend-expressive) 
