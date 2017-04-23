@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#2](https://github.com/zendframework/zend-config-aggregator/pull/3) added
+- [#3](https://github.com/zendframework/zend-config-aggregator/pull/3) added
   zend-config ^3.0 support
 
 ### Deprecated
