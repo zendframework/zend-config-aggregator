@@ -109,7 +109,7 @@ $aggregator = new ConfigAggregator(
         new PhpFileProvider('*.global.php'),
     ]
 );
-var_dump($configManager->getMergedConfig());
+var_dump($aggregator->getMergedConfig());
 ```
 
 Output from both examples will be the same:
