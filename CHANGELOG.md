@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.0.0 - TBD
+
+### Added
+
+- [#7](https://github.com/zendframework/zend-config-aggregator/pull/7) adds
+  online documentation at https://docs.zendframework.com/zend-config-aggregator/
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 0.2.1 - 2017-04-23
 
 ### Added
