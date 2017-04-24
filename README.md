@@ -2,11 +2,13 @@
 
 [![Build Status](https://travis-ci.org/zendframework/zend-config-aggregator.svg?branch=master)](https://travis-ci.org/zendframework/zend-config-aggregator) 
 
-Aggregates and merges configuration, from a variety of formats. Supports caching for fast bootstrap in production environments.
+Aggregates and merges configuration, from a variety of formats. Supports caching
+for fast bootstrap in production environments.
  
 ## Usage
 
-Standalone `ConfigAggregator` can be used to merge PHP-based configuration files: 
+The standalone `ConfigAggregator` can be used to merge PHP-based configuration
+files: 
 
 ```php
 use Zend\ConfigAggregator\ConfigAggregator;
@@ -54,9 +56,11 @@ array(3) {
 }
 ```
 
-Configuration is merged in the same order as it is passed, with later entries having precedence.
+Configuration is merged in the same order as it is passed, with later entries
+having precedence.
 
-Together with `zend-config`, `zend-config-aggregator` can be also used to load configuration in different format - YAML, XML or INI:
+Together with `zend-config`, `zend-config-aggregator` can be also used to load
+configuration in different formats, including YAML, JSON, XML, or INI:
 
 ```php
 use Zend\ConfigAggregator\ConfigAggregator;
@@ -67,9 +71,9 @@ $aggregator = new ConfigAggregator([
 ]);
 ```
 
-For more details, please refer to the [documentation](https://zendframework.github.io/zend-config-aggregator/).
+For more details, please refer to the [documentation](https://docs.zendframework.com/zend-config-aggregator/).
 
------------------------------------------------------
+-----
 
 - File issues at https://github.com/zendframework/zend-config-aggregator/issues
-- Documentation is at https://zendframework.github.io/zend-config-aggregator/
+- Documentation is at https://docs.zendframework.com/zend-config-aggregator/
