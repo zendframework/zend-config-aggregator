@@ -5,12 +5,19 @@ language: php
 cache:
   directories:
     - $HOME/.composer/cache
+    - $HOME/.local
     - vendor
+    - zf-mkdoc-theme
 
 env:
   global:
     - COMPOSER_ARGS="--no-interaction"
     - COVERAGE_DEPS="satooshi/php-coveralls"
+    - SITE_URL=https://docs.zendframework.com/zend-config-aggregator
+    - GH_USER_NAME="Matthew Weier O'Phinney"
+    - GH_USER_EMAIL=matthew@weierophinney.net
+    - GH_REF=github.com/zendframework/zend-config-aggregator.git
+    - secure: "dN904HglCkMIRYDWuG954EDSIq8w4IhhDgfN5PasYudyM56f8dRACIfdn6hwy2Bcp3DUkd21FMjKbnIiTG+FfmquN7VmL3ZMeo6xuMZn2FMDhzHKHq0aM1NMFA+NpPPOpVD2kZDrjpNq99PGolX2KEU/JQn3nAO/2y7yRMLVfGydLGcOkT+LdOzxpfA+RDrAf3WBUv+7zbokHHfVvUwhY+kbX8abMS9seDBsqootA48lLNl433y24a3M4P/Bw2F3KdXriVeApkZ4jPCTOSyYqhyDsU0KJrSpRpOOFnkP+R8kSRGkpuiWxibGSy4yUP4v/ocp/tLptU5xnIlI4jdWXQifbMX/2bs2bkVXtRVH6Eb+G3BwPjqgbDXf6igSlbktTQBAxnoG0WPEMlNkxQBYgbMXZwoODNAyYw/Ziyi0l1fQiWUQe9FjwQZpawuJU0c7mqDHWC+qjo50NNeq0xaSZ6etuOcdmPQpdCDqHbnVzaNdQCdYIAEg502xjumacLIzYhcGGUq7le/hsnyzILzlY1EOxghATdWg2Z6ly/7Ul2TqfNt3A5sRoJQucbfovJfsNQjxyjlEjcOxJyICBFZXFsW3PRYglg6AMuojHC3H28Fo7adZtmWMw68dzyZtfmra5h935/B/ghZi+cItxMgx07/EsBLsbBFsoMZkwvCIQYo="
 
 matrix:
   fast_finish: false
@@ -23,6 +30,7 @@ matrix:
         - DEPS=locked
         - TEST_COVERAGE=true
         - PATH="$HOME/.local/bin:$PATH"
+        - DEPLOY_DOCS="$(if [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then echo -n 'true' ; else echo -n 'false' ; fi)"
     - php: 5.6
       env:
         - DEPS=latest
@@ -73,10 +81,18 @@ script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
   - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
   - if [[ $CS_CHECK == 'true' ]]; then composer license-check ; fi
+  - if [[ $DEPLOY_DOCS == "true" && "$TRAVIS_TEST_RESULT" == "0" ]]; then wget -O theme-installer.sh "https://raw.githubusercontent.com/zendframework/zf-mkdoc-theme/master/theme-installer.sh" ; chmod 755 theme-installer.sh ; ./theme-installer.sh ; fi
 
 after_script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer upload-coverage ; fi
 
+after_success:
+  - if [[ $DEPLOY_DOCS == "true" ]]; then echo "Preparing to build and deploy documentation" ; ./zf-mkdoc-theme/deploy.sh ; echo "Completed deploying documentation" ; fi
+
 notifications:
-  irc: "irc.freenode.org#zftalk.dev"
   email: false
+  slack:
+    rooms:
+      - secure: "ZvwOGYOX2UzaLI9OXvpsJeFybUj3MjYPS2lJC1VVKYlDw7Lv8+ruiqb/Ku5VO26AuSjEmkVy6MDWj4mklXRRVpEie1BrjTe/o+m/4TH/8/ngYF5QaNlBppUOeSTHzkFmN0k7UvcG99tDMwIszVNtMy2ASox5JQYCkfOgzWGhgtgdmYvCOyKh50875roG8PGfIEk1Jqb2ANgcUaoZJFhRHmsW0xtSUiu4WiI8psARG56n50b0grQHhb9TztcQomQTyYQUxzD5Ft/tsSm0TKTW3Nxf/TvAtyY81bTzPq0Y8vtypYDmFVR8WQTI1AeKJLfbrerRpdfFvHDSL8BGo50y2MVa8Zr8imxpzpC23Sx464TAdABuufbJl7qlg+4UPwJxFQAy9TPzXg20UwP3TT0Fim60aiLcRkMpI4i5z+AGoX/Gz+Y5RJ6TWsidXPc1Gjuf/1j3HV3OlyiZGJ1xq5HgvNFgSKkEnYgejDYXvWa+RGhYIw11pipFLccuBV4GcjXwRVctc9ExcDIen9lfjX+p7eUpYaDqsq6CBDjFBW7K03LfbhrB8sQLoP24QGPBH5IzkFn5t08GVhuJV3Z4pDj7CLi3TcwIF8n8qKRuVQ+ezRwV6DlJbTCfU5swUVrzWJrqybBgC0kZP9RKPPp1FUuoke5THMkQUdQYb/93x1oKnio="
+    on_success: change
+    on_failure: always
