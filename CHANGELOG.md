@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 0.2.1 - 2017-04-23
+
+### Added
+
+- [#3](https://github.com/zendframework/zend-config-aggregator/pull/3) added
+  zend-config ^3.0 support
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 0.2.0 - 2017-01-11
 
 ### Added
