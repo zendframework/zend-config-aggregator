@@ -1,16 +1,20 @@
 # Caching
 
-Merging configuration on every request is not performant. As such,
-zend-config-aggregator also provides the ability to enable a filesystem-based
-configuration cache.
+Merging configuration on every request is not performant, particularly when
+using many configuration files. As such, zend-config-aggregator also
+provides the ability to enable a filesystem-based configuration cache.
 
 To enable the configuration cache, pass a cache file name as the second
 parameter to the `ConfigAggregator` constructor:
 
 ```php
-$aggrgator = new ConfigAggregator(
+use Zend\ConfigAggregator\ArrayProvider;
+use Zend\ConfigAggregator\ConfigAggregator;
+use Zend\ConfigAggregator\PhpFileProvider;
+
+$aggregator = new ConfigAggregator(
     [
-        function () { return [ConfigAggregator::ENABLE_CACHE => true]; },
+        new ArrayProvider([ConfigAggregator::ENABLE_CACHE => true]),
         new PhpFileProvider('*.global.php'),
     ],
     'data/config-cache.php'
@@ -36,7 +40,7 @@ return [
 ```
 
 When caching is enabled, the `ConfigAggregator` does not iterate config
-providers. Because of that it is very fast, but after it is enabled you cannot
+providers. Because of that it is very fast, but after it is enabled, you cannot
 make any changes to configuration without clearing the cache. **Caching should
 be used only in a production environment**, and your deployment process should
 clear the cache.
