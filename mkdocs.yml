@@ -1,0 +1,11 @@
+site_name: zend-config-aggregator
+docs_dir: doc/book
+site_dir: doc/html
+pages:
+    - index.md
+    - Introduction: intro.md
+    - 'Config Providers': config-providers.md
+    - Caching: caching.md
+site_description: 'Lightweight library for collecting and merging configuration from different sources.'
+repo_url: 'https://github.com/zendframework/zend-config-aggregator'
+copyright: 'Copyright (c) 2017 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a>'
