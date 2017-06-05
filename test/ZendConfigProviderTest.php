@@ -8,7 +8,7 @@
 
 namespace ZendTest\ConfigAggregator;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\ConfigAggregator\ZendConfigProvider;
 use Zend\Stdlib\ArrayUtils;
 
