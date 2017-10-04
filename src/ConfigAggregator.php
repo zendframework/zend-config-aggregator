@@ -38,7 +38,7 @@ EOT;
     /**
      * @var callable[]
      */
-    private $postProcessors;
+    private $postProcessors = [];
 
     /**
      * @param array $providers Array of providers. These may be callables, or
