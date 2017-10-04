@@ -158,17 +158,7 @@ EOT;
     private function mergeConfig(&$mergedConfig, $config, callable $provider)
     {
         if (! is_array($config)) {
-            $type = '';
-
-            if (is_object($provider) && ! $provider instanceof Closure) {
-                $type = get_class($provider);
-            }
-            if ($provider instanceof Closure) {
-                $type = 'Closure';
-            }
-            if (is_callable($provider) && ! $provider instanceof Closure) {
-                $type = is_string($provider) ? $provider : gettype($provider);
-            }
+            $type = $this->detectProviderType($provider);
 
             throw new InvalidConfigProviderException(sprintf(
                 'Cannot read config from %s; does not return array',
@@ -260,5 +250,28 @@ EOT;
         }
 
         return $config;
+    }
+
+    /**
+     * @param Closure|object|callable $provider
+     *
+     * @return string
+     */
+    private function detectProviderType($provider)
+    {
+        if ($provider instanceof Closure) {
+            return 'Closure';
+        }
+
+        if (is_callable($provider)) {
+            return is_string($provider) ? $provider : gettype($provider);
+        }
+
+        if (is_object($provider)) {
+            return get_class($provider);
+        }
+
+        // TODO: Probably we add `unknown` instead of empty string?
+        return '';
     }
 }
