@@ -36,6 +36,11 @@ EOT;
     private $config;
 
     /**
+     * @var callable[]
+     */
+    private $postProcessors;
+
+    /**
      * @param array $providers Array of providers. These may be callables, or
      *     string values representing classes that act as providers. If the
      *     latter, they must be instantiable without constructor arguments.
@@ -52,6 +57,7 @@ EOT;
         }
 
         $this->config = $this->loadConfigFromProviders($providers);
+        $this->config = $this->postProcessConfig($this->config);
         $this->cacheConfig($this->config, $cachedConfigFile);
     }
 
@@ -61,6 +67,16 @@ EOT;
     public function getMergedConfig()
     {
         return $this->config;
+    }
+
+    /**
+     * @param callable $processor
+     *
+     * @return void
+     */
+    public function addPostProcessor(callable $processor)
+    {
+        array_push($this->postProcessors, $processor);
     }
 
     /**
@@ -230,5 +246,19 @@ EOT;
             date('c'),
             var_export($config, true)
         ));
+    }
+
+    /**
+     * @param array $config
+     *
+     * @return array
+     */
+    private function postProcessConfig(array $config)
+    {
+        foreach ($this->postProcessors as $processor) {
+            $config = $processor($config);
+        }
+
+        return $config;
     }
 }
