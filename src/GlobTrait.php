@@ -27,9 +27,9 @@ trait GlobTrait
     private function glob($pattern)
     {
         if (class_exists(Glob::class)) {
-            return Glob::glob($pattern, Glob::GLOB_BRACE);
+            return Glob::glob($pattern, Glob::GLOB_BRACE | Glob::GLOB_NOSORT);
         }
 
-        return glob($pattern, GLOB_BRACE);
+        return glob($pattern, GLOB_BRACE | GLOB_NOSORT);
     }
 }
