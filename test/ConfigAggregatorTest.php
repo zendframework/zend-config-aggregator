@@ -9,7 +9,7 @@
 namespace ZendTest\ConfigAggregator;
 
 use org\bovigo\vfs\vfsStream;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use StdClass;
 use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregator\InvalidConfigProviderException;
