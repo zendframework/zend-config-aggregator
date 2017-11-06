@@ -2,4 +2,5 @@
 
 return [
     'fruit' => 'banana',
+    'vegetable' => 'carrot',
 ];
