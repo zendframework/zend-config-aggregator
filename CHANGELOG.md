@@ -2,24 +2,6 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.1.0 - TBD
-
-### Added
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
-
 ## 1.0.1 - TBD
 
 ### Added
@@ -36,7 +18,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#14](https://github.com/zendframework/zend-config-aggregator/pull/14) fixes
+  how file globbing of configuration files works on FreeBSD and IBM i Series
+  systems. It does so by adding a dependency on zend-stdlib, which provides a
+  glob compatibility layer.
 
 ## 1.0.0 - 2017-04-24
 
