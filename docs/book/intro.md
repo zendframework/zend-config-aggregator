@@ -7,6 +7,9 @@ production.
 It supports loading and merging configuration from multiple sources: PHP files,
 arrays, or INI/YAML/XML files (using [zend-config](https://docs.zendframework.com/zend-config/))
 
+It also provides the ability to post process the merged configuration to apply e.g. parameter
+handling like [symfony/dependency-injection](https://symfony.com/doc/current/service_container/parameters.html#parameters-in-configuration-files)
+
 ## Basic usage
 
 The standalone `ConfigAggregator` can be used to merge PHP-based configuration files:
@@ -69,4 +72,47 @@ use Zend\ConfigAggregator\ZendConfigProvider;
 $aggregator = new ConfigAggregator([
     new ZendConfigProvider('config/*.{json,yaml,php}'),
 ]);
+```
+
+Together with [symfony/dependency-injection](https://packagist.org/packages/symfony/dependency-injection), `zend-config-aggregator` can be also used to resolve
+parameters within your configuration:
+
+```php
+use Zend\ConfigAggregator\ConfigAggregator;
+use Zend\ConfigAggregator\SymfonyParameterPostProcessor;
+
+$provider = [
+    function () {
+        return [
+            'session' => [
+                'cookie_domain' => '%cookie_domain%',
+            ],
+        ];
+    },
+];
+
+$parameters = [
+    'cookie_domain' => 'example.com',
+];
+
+$aggregator = new ConfigAggregator($provider, null, [
+    new ParameterPostProcessor($parameters), 
+]);
+```
+
+Result:
+
+```php
+array(2) {
+  'session' =>
+  array(1) {
+    'cookie_domain' =>
+    string(11) "example.com"
+  }
+  'parameters' =>
+  array(1) {
+    'cookie_domain' =>
+    string(11) "example.com"
+  }
+}
 ```
