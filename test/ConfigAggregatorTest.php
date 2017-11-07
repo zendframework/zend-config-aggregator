@@ -12,9 +12,11 @@ use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use StdClass;
 use Zend\ConfigAggregator\ConfigAggregator;
+use Zend\ConfigAggregator\InvalidConfigProcessorException;
 use Zend\ConfigAggregator\InvalidConfigProviderException;
 use ZendTest\ConfigAggregator\Resources\BarConfigProvider;
 use ZendTest\ConfigAggregator\Resources\FooConfigProvider;
+use ZendTest\ConfigAggregator\Resources\FooPostProcessor;
 
 class ConfigAggregatorTest extends TestCase
 {
@@ -93,5 +95,41 @@ class ConfigAggregatorTest extends TestCase
 
         $this->assertInternalType('array', $mergedConfig);
         $this->assertEquals($expected, $mergedConfig);
+    }
+
+    public function testConfigAggregatorRisesExceptionIfProcessorClassDoesNotExist()
+    {
+        $this->expectException(InvalidConfigProcessorException::class);
+        new ConfigAggregator([], null, ['NonExistentConfigProcessor']);
+    }
+
+    public function testConfigAggregatorRisesExceptionIfProcessorIsNotCallable()
+    {
+        $this->expectException(InvalidConfigProcessorException::class);
+        new ConfigAggregator([], null, [StdClass::class]);
+    }
+
+    public function testProcessorCanBeClosure()
+    {
+        $aggregator = new ConfigAggregator([], null, [
+            function (array $config) {
+                return $config + ['processor' => 'closure'];
+            },
+        ]);
+
+        $config = $aggregator->getMergedConfig();
+        $this->assertEquals(['processor' => 'closure'], $config);
+    }
+
+    public function testConfigAggregatorCanPostProcessConfiguration()
+    {
+        $aggregator = new ConfigAggregator([
+            function () {
+                return ['foo' => 'bar'];
+            },
+        ], null, [new FooPostProcessor]);
+        $mergedConfig = $aggregator->getMergedConfig();
+
+        $this->assertEquals($mergedConfig, ['foo' => 'bar', 'post-processed' => true]);
     }
 }

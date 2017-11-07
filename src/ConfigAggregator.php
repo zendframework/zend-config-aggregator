@@ -36,28 +36,27 @@ EOT;
     private $config;
 
     /**
-     * @var callable[]
-     */
-    private $postProcessors = [];
-
-    /**
      * @param array $providers Array of providers. These may be callables, or
      *     string values representing classes that act as providers. If the
      *     latter, they must be instantiable without constructor arguments.
      * @param null|string $cachedConfigFile Configuration cache file; config is
      *     loaded from this file if present, and written to it if not. null
      *     disables caching.
+     * @param array $postProcessors Array of processors. These may be callables, or
+     *     string values representing classes that act as processors. If the
+     *     latter, they must be instantiable without constructor arguments.
      */
     public function __construct(
         array $providers = [],
-        $cachedConfigFile = null
+        $cachedConfigFile = null,
+        array $postProcessors = []
     ) {
         if ($this->loadConfigFromCache($cachedConfigFile)) {
             return;
         }
 
         $this->config = $this->loadConfigFromProviders($providers);
-        $this->config = $this->postProcessConfig($this->config);
+        $this->config = $this->postProcessConfig($postProcessors, $this->config);
         $this->cacheConfig($this->config, $cachedConfigFile);
     }
 
@@ -67,16 +66,6 @@ EOT;
     public function getMergedConfig()
     {
         return $this->config;
-    }
-
-    /**
-     * @param callable $processor
-     *
-     * @return void
-     */
-    public function addPostProcessor(callable $processor)
-    {
-        array_push($this->postProcessors, $processor);
     }
 
     /**
@@ -109,6 +98,41 @@ EOT;
         }
 
         return $provider;
+    }
+
+    /**
+     * Resolve a processor.
+     *
+     * If the provider is a string class name, instantiates that class and
+     * tests if it is callable, returning it if true.
+     *
+     * If the provider is a callable, returns it verbatim.
+     *
+     * Raises an exception for any other condition.
+     *
+     * @param string|callable $processor
+     * @return callable
+     * @throws InvalidConfigProcessorException
+     */
+    private function resolveProcessor($processor)
+    {
+        if (is_string($processor)) {
+            if (! class_exists($processor)) {
+                throw new InvalidConfigProcessorException(
+                    "Cannot use $processor as processor - class cannot be loaded."
+                );
+            }
+            $processor = new $processor();
+        }
+
+        if (! is_callable($processor)) {
+            $type = $this->detectVariableType($processor);
+            throw new InvalidConfigProcessorException(
+                "Cannot use processor of type $type as processor - config processor must be callable."
+            );
+        }
+
+        return $processor;
     }
 
     /**
@@ -158,7 +182,7 @@ EOT;
     private function mergeConfig(&$mergedConfig, $config, callable $provider)
     {
         if (! is_array($config)) {
-            $type = $this->detectProviderType($provider);
+            $type = $this->detectVariableType($provider);
 
             throw new InvalidConfigProviderException(sprintf(
                 'Cannot read config from %s; does not return array',
@@ -239,13 +263,15 @@ EOT;
     }
 
     /**
+     * @param array $processors
      * @param array $config
      *
      * @return array
      */
-    private function postProcessConfig(array $config)
+    private function postProcessConfig(array $processors, array $config)
     {
-        foreach ($this->postProcessors as $processor) {
+        foreach ($processors as $processor) {
+            $processor = $this->resolveProcessor($processor);
             $config = $processor($config);
         }
 
@@ -253,25 +279,24 @@ EOT;
     }
 
     /**
-     * @param Closure|object|callable $provider
+     * @param Closure|object|callable $variable
      *
      * @return string
      */
-    private function detectProviderType($provider)
+    private function detectVariableType($variable)
     {
-        if ($provider instanceof Closure) {
+        if ($variable instanceof Closure) {
             return 'Closure';
         }
 
-        if (is_callable($provider)) {
-            return is_string($provider) ? $provider : gettype($provider);
+        if (is_callable($variable)) {
+            return is_string($variable) ? $variable : gettype($variable);
         }
 
-        if (is_object($provider)) {
-            return get_class($provider);
+        if (is_object($variable)) {
+            return get_class($variable);
         }
 
-        // TODO: Probably we add `unknown` instead of empty string?
-        return '';
+        return 'unknown';
     }
 }
