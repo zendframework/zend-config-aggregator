@@ -297,6 +297,6 @@ EOT;
             return get_class($variable);
         }
 
-        return 'unknown';
+        return gettype($variable);
     }
 }
