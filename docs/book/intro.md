@@ -96,7 +96,7 @@ $parameters = [
 ];
 
 $aggregator = new ConfigAggregator($provider, null, [
-    new ParameterPostProcessor($parameters), 
+    new SymfonyParameterPostProcessor($parameters), 
 ]);
 ```
 
