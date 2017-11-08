@@ -103,10 +103,10 @@ EOT;
     /**
      * Resolve a processor.
      *
-     * If the provider is a string class name, instantiates that class and
+     * If the processor is a string class name, instantiates that class and
      * tests if it is callable, returning it if true.
      *
-     * If the provider is a callable, returns it verbatim.
+     * If the processor is a callable, returns it verbatim.
      *
      * Raises an exception for any other condition.
      *
