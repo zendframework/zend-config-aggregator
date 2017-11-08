@@ -2,6 +2,11 @@
     "name": "zendframework/zend-config-aggregator",
     "description": "Lightweight library for collecting and merging configuration from different sources",
     "license": "BSD-3-Clause",
+    "keywords": [
+        "zf",
+        "zendframework",
+        "config-aggregator"
+    ],
     "support": {
         "docs": "https://docs.zendframework.com/zend-config-aggregator/",
         "issues": "https://github.com/zendframework/zend-config-aggregator/issues",
