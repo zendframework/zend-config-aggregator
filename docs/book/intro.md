@@ -9,7 +9,7 @@ arrays, or INI/YAML/XML files (using [zend-config](https://docs.zendframework.co
 
 ## Basic usage
 
-The standalone `ConfigAggregator` can be used to merge PHP-based configuration files: 
+The standalone `ConfigAggregator` can be used to merge PHP-based configuration files:
 
 ```php
 use Zend\ConfigAggregator\ConfigAggregator;
@@ -29,7 +29,7 @@ Using this provider, each file should return a PHP array:
 return [
     'db' => [
         'dsn' => 'mysql:...',
-    ],    
+    ],
 ];
 
 // cache.global.php

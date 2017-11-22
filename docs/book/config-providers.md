@@ -86,14 +86,14 @@ The `PhpFileProvider` is implemented as a generator.
 ## Available config providers
 
 ### PhpFileProvider
- 
+
 Loads configuration from PHP files returning arrays, such as this one:
 
 ```php
 return [
     'db' => [
         'dsn' => 'mysql:...',
-    ],    
+    ],
 ];
 ```
 
@@ -105,7 +105,7 @@ use Zend\ConfigAggregator\PhpFileProvider;
 
 $aggregator = new ConfigAggregator(
     [
-        new PhpFileProvider('config/*.global.php'),        
+        new PhpFileProvider('config/*.global.php'),
     ]
 );
 ```
@@ -120,7 +120,7 @@ for cross-platform glob patterns, including brace notation:
 `'config/autoload/{{,*.}global,{,*.}local}.php'`. Install
 [zendframework/zend-stdlib](https://docs.zendframework.com/zend-stdlib) to
 utilize this feature.
-    
+
 ### ZendConfigProvider
 
 Sometimes using plain PHP files may be not enough; you may want to build your
@@ -157,7 +157,7 @@ $aggregator = new ConfigAggregator(
 ```
 
 `ZendConfigProvider` accepts wildcards and globs, and autodetects the config
-type based on file extension. 
+type based on file extension.
 
 Some config readers (in particular, YAML) may need additional dependencies;
 please refer to [the zend-config manual](https://docs.zendframework.com/zend-config/reader/)
