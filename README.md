@@ -1,6 +1,7 @@
 # zend-config-aggregator
 
-[![Build Status](https://travis-ci.org/zendframework/zend-config-aggregator.svg?branch=master)](https://travis-ci.org/zendframework/zend-config-aggregator) 
+[![Build Status](https://secure.travis-ci.org/zendframework/zend-config-aggregator.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-config-aggregator)
+[![Coverage Status](https://coveralls.io/repos/github/zendframework/zend-config-aggregator/badge.svg?branch=master)](https://coveralls.io/github/zendframework/zend-config-aggregator?branch=master)
 
 Aggregates and merges configuration, from a variety of formats. Supports caching
 for fast bootstrap in production environments.
