@@ -210,7 +210,7 @@ var_dump($aggregator-&gt;getMergedConfig());</code></pre>
 <pre class="codehilite"><code class="language-php">return [
     'db' =&gt; [
         'dsn' =&gt; 'mysql:...',
-    ],    
+    ],
 ];</code></pre>
 
 <p>Wildcards are supported:</p>
@@ -219,7 +219,7 @@ use Zend\ConfigAggregator\PhpFileProvider;
 
 $aggregator = new ConfigAggregator(
     [
-        new PhpFileProvider('config/*.global.php'),        
+        new PhpFileProvider('config/*.global.php'),
     ]
 );</code></pre>
 
@@ -258,7 +258,7 @@ $aggregator = new ConfigAggregator(
 );</code></pre>
 
 <p><code>ZendConfigProvider</code> accepts wildcards and globs, and autodetects the config
-type based on file extension. </p>
+type based on file extension.</p>
 <p>Some config readers (in particular, YAML) may need additional dependencies;
 please refer to <a href="https://docs.zendframework.com/zend-config/reader/">the zend-config manual</a>
 for more details.</p>
