@@ -1,31 +1,31 @@
 {
     "name": "zendframework/zend-config-aggregator",
-    "description": "Lightweight library for merging and caching application config",
-    "type": "library",
-    "license": "BSD 3-Clause",
-    "authors": [
-        {
-            "name": "Mateusz Tymek",
-            "email": "mtymek@gmail.com"
-        }
+    "description": "Lightweight library for collecting and merging configuration from different sources",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "zf",
+        "zendframework",
+        "config-aggregator"
     ],
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev",
-            "dev-develop": "1.1-dev"
-        }
+    "support": {
+        "docs": "https://docs.zendframework.com/zend-config-aggregator/",
+        "issues": "https://github.com/zendframework/zend-config-aggregator/issues",
+        "source": "https://github.com/zendframework/zend-config-aggregator",
+        "rss": "https://github.com/zendframework/zend-config-aggregator/releases.atom",
+        "slack": "https://zendframework-slack.herokuapp.com",
+        "forum": "https://discourse.zendframework.com/c/questions/components"
     },
     "require": {
         "php": "^5.6 || ^7.0",
         "zendframework/zend-stdlib": "^2.7.7 || ^3.1.0"
     },
     "require-dev": {
+        "malukenho/docheader": "^0.1.5",
+        "mikey179/vfsStream": "^1.6",
         "phpunit/phpunit": "^5.7.21 || ^6.3",
         "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-config": "^2.6 || ^3.0",
-        "zendframework/zend-servicemanager": "^2.7.7 || ^3.1.1",
-        "malukenho/docheader": "^0.1.5",
-        "mikey179/vfsStream": "^1.6"
+        "zendframework/zend-servicemanager": "^2.7.7 || ^3.1.1"
     },
     "suggest": {
         "zendframework/zend-config": "Allows loading configuration from XML, INI, YAML, and JSON files"
@@ -40,6 +40,15 @@
             "ZendTest\\ConfigAggregator\\": "test/"
         }
     },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev",
+            "dev-develop": "1.1-dev"
+        }
+    },
     "scripts": {
         "check": [
             "@license-check",
@@ -48,9 +57,8 @@
         ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
-        "license-check": "vendor/bin/docheader check src/",
         "test": "phpunit --colors=always",
-        "test-coverage": "phpunit --coverage-clover clover.xml",
-        "upload-coverage": "coveralls -v"
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+        "license-check": "docheader check src/ test/"
     }
 }
