@@ -282,12 +282,12 @@ EOT;
             return 'Closure';
         }
 
-        if (is_callable($variable)) {
-            return is_string($variable) ? $variable : gettype($variable);
-        }
-
         if (is_object($variable)) {
             return get_class($variable);
+        }
+
+        if (is_callable($variable)) {
+            return is_string($variable) ? $variable : gettype($variable);
         }
 
         return gettype($variable);
