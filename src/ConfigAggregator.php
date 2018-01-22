@@ -86,15 +86,14 @@ EOT;
     {
         if (is_string($provider)) {
             if (! class_exists($provider)) {
-                throw new InvalidConfigProviderException("Cannot read config from $provider - class cannot be loaded.");
+                throw InvalidConfigProviderException::fromNamedProvider($provider);
             }
             $provider = new $provider();
         }
 
         if (! is_callable($provider)) {
-            throw new InvalidConfigProviderException(
-                sprintf("Cannot read config from %s - config provider must be callable.", get_class($provider))
-            );
+            $type = $this->detectVariableType($provider);
+            throw InvalidConfigProviderException::fromUnsupportedType($type);
         }
 
         return $provider;
