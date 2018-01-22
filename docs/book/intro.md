@@ -78,8 +78,6 @@ Together with [symfony/dependency-injection](https://packagist.org/packages/symf
 parameters within your configuration:
 
 ```php
-use Zend\ConfigAggregator\ConfigAggregator;
-use Zend\ConfigAggregator\SymfonyParameterPostProcessor;
 
 $provider = [
     function () {
@@ -93,11 +91,30 @@ $provider = [
 
 $parameters = [
     'cookie_domain' => 'example.com',
+    'nested' => [
+        'reuse_cookie_domain' => '%cookie_domain%',
+    ],
 ];
 
-$aggregator = new ConfigAggregator($provider, null, [
-    new SymfonyParameterPostProcessor($parameters), 
+$bag = new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag($parameters);
+$resolver = function (array $config) use ($bag) {
+    $parametersFromConfiguration = isset($config['parameters']) ? $config['parameters'] : [];
+    $bag->add($parametersFromConfiguration);
+    // Resolve parameters which probably base on parameters
+    $bag->resolve();
+    
+    // Replace all parameters within the configuration
+    $resolved = $bag->resolveValue($config);
+    $resolved['parameters'] = $bag->all();
+    
+    return $bag->unescapeValue($resolved);
+};
+
+$aggregator = new \Zend\ConfigAggregator\ConfigAggregator($provider, null, [
+    $resolver, 
 ]);
+
+var_dump($aggregator->getMergedConfig());
 ```
 
 Result:
@@ -110,9 +127,14 @@ array(2) {
     string(11) "example.com"
   }
   'parameters' =>
-  array(1) {
+  array(2) {
     'cookie_domain' =>
     string(11) "example.com"
+    'nested' =>
+    array(1) {
+      'reuse_cookie_domain' =>
+      string(11) "example.com"
+    }
   }
 }
 ```
