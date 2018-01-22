@@ -5,8 +5,8 @@ pages:
     - index.md
     - Introduction: intro.md
     - 'Config Providers': config-providers.md
-    - 'Config Post Processors': config-post-processors.md
+    - 'Post Processors': config-post-processors.md
     - Caching: caching.md
 site_description: 'Lightweight library for collecting and merging configuration from different sources.'
 repo_url: 'https://github.com/zendframework/zend-config-aggregator'
-copyright: 'Copyright (c) 2016-2017 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a>'
+copyright: 'Copyright (c) 2016-2018 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a>'

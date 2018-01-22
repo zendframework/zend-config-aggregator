@@ -74,67 +74,8 @@ $aggregator = new ConfigAggregator([
 ]);
 ```
 
-Together with [symfony/dependency-injection](https://packagist.org/packages/symfony/dependency-injection), `zend-config-aggregator` can be also used to resolve
-parameters within your configuration:
-
-```php
-
-$provider = [
-    function () {
-        return [
-            'session' => [
-                'cookie_domain' => '%cookie_domain%',
-            ],
-        ];
-    },
-];
-
-$parameters = [
-    'cookie_domain' => 'example.com',
-    'nested' => [
-        'reuse_cookie_domain' => '%cookie_domain%',
-    ],
-];
-
-$bag = new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag($parameters);
-$resolver = function (array $config) use ($bag) {
-    $parametersFromConfiguration = isset($config['parameters']) ? $config['parameters'] : [];
-    $bag->add($parametersFromConfiguration);
-    // Resolve parameters which probably base on parameters
-    $bag->resolve();
-    
-    // Replace all parameters within the configuration
-    $resolved = $bag->resolveValue($config);
-    $resolved['parameters'] = $bag->all();
-    
-    return $bag->unescapeValue($resolved);
-};
-
-$aggregator = new \Zend\ConfigAggregator\ConfigAggregator($provider, null, [
-    $resolver,
-]);
-
-var_dump($aggregator->getMergedConfig());
-```
-
-Result:
-
-```php
-array(2) {
-  'session' =>
-  array(1) {
-    'cookie_domain' =>
-    string(11) "example.com"
-  }
-  'parameters' =>
-  array(2) {
-    'cookie_domain' =>
-    string(11) "example.com"
-    'nested' =>
-    array(1) {
-      'reuse_cookie_domain' =>
-      string(11) "example.com"
-    }
-  }
-}
-```
+You can also supply [post processors](config-post-processors.md) for
+configuration. These are PHP callables that accept the merged configuration as
+an argument, do something with it, and return configuration on completion. This
+could be used, for example, to allow templating parameters that are used in
+multiple locations and resolving them to a single value later.
