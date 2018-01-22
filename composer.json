@@ -23,7 +23,6 @@
         "malukenho/docheader": "^0.1.5",
         "mikey179/vfsStream": "^1.6",
         "phpunit/phpunit": "^5.7.21 || ^6.3",
-        "symfony/dependency-injection": "^3.4",
         "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-config": "^2.6 || ^3.0",
         "zendframework/zend-servicemanager": "^2.7.7 || ^3.1.1"

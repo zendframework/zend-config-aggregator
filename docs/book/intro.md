@@ -111,7 +111,7 @@ $resolver = function (array $config) use ($bag) {
 };
 
 $aggregator = new \Zend\ConfigAggregator\ConfigAggregator($provider, null, [
-    $resolver, 
+    $resolver,
 ]);
 
 var_dump($aggregator->getMergedConfig());

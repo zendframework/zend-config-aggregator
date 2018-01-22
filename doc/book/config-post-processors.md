@@ -45,13 +45,11 @@ array(2) {
 
 ## Available config post processors
 
-### SymfonyParameterPostProcessor
+### Symfony ParameterBag Post Processor
 
 Resolves parameters within your configuration.
 
 ```php
-use Zend\ConfigAggregator\ConfigAggregator;
-use Zend\ConfigAggregator\SymfonyParameterPostProcessor;
 
 $provider = [
     function () {
@@ -72,7 +70,21 @@ $parameters = [
     'cookie_domain' => 'example.com',
 ];
 
+$bag = new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag($parameters);
+$resolver = function (array $config) use ($bag) {
+    $parametersFromConfiguration = isset($config['parameters']) ? $config['parameters'] : [];
+    $bag->add($parametersFromConfiguration);
+    // Resolve parameters which probably base on parameters
+    $bag->resolve();
+    
+    // Replace all parameters within the configuration
+    $resolved = $bag->resolveValue($config);
+    $resolved['parameters'] = $bag->all();
+    
+    return $bag->unescapeValue($resolved);
+};
+
 $aggregator = new ConfigAggregator($provider, null, [
-    new SymfonyParameterPostProcessor($parameters),
+    $resolver,
 ]);
 ```
