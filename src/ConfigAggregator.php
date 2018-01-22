@@ -118,18 +118,14 @@ EOT;
     {
         if (is_string($processor)) {
             if (! class_exists($processor)) {
-                throw new InvalidConfigProcessorException(
-                    "Cannot use $processor as processor - class cannot be loaded."
-                );
+                throw InvalidConfigProcessorException::fromNamedProcessor($processor);
             }
             $processor = new $processor();
         }
 
         if (! is_callable($processor)) {
             $type = $this->detectVariableType($processor);
-            throw new InvalidConfigProcessorException(
-                "Cannot use processor of type $type as processor - config processor must be callable."
-            );
+            throw InvalidConfigProcessorException::fromUnsupportedType($type);
         }
 
         return $processor;
@@ -263,9 +259,6 @@ EOT;
     }
 
     /**
-     * @param array $processors
-     * @param array $config
-     *
      * @return array
      */
     private function postProcessConfig(array $processors, array $config)

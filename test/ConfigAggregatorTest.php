@@ -130,6 +130,6 @@ class ConfigAggregatorTest extends TestCase
         ], null, [new FooPostProcessor]);
         $mergedConfig = $aggregator->getMergedConfig();
 
-        $this->assertEquals($mergedConfig, ['foo' => 'bar', 'post-processed' => true]);
+        $this->assertEquals(['foo' => 'bar', 'post-processed' => true], $mergedConfig);
     }
 }
