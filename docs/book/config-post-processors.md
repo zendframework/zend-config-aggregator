@@ -52,7 +52,7 @@ configuration.
 The following example resolves templated parameters to either other parameters
 within your configuration, or a static set of substitutions. Templated
 parameters have the format `%<config_key>%`; `.` characters indicate an
-additional level of nesting.
+additional level of nesting. If you want to provide configuration parameters with `%` in its value, you have to escape that `%` by using another `%` like `%%bar` or `%%foo%%`.
 
 In the following example, we define a provider that returns a nested array of
 configuration. We then define additional parameters and pass them to a 
@@ -117,7 +117,7 @@ array(2) {
     string(11) "example.com"
   }
   'config_parameter_with_percent' =>
-    string(7) "%%foo%%"
+    string(7) "%foo%"
   }
   'parameters' =>
   array(1) {
