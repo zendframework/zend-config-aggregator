@@ -162,3 +162,21 @@ type based on file extension.
 Some config readers (in particular, YAML) may need additional dependencies;
 please refer to [the zend-config manual](https://docs.zendframework.com/zend-config/reader/)
 for more details.
+
+
+### ZendModuleProvider
+
+To provide configurations from old Modules which were created for `zendframework/zend-mvc` applications, you can use the `ZendModuleProvider`.
+This provider would parse the module class for the `Module::getConfig` method aswell as for the `Module::getServiceConfig` (declared by `ServiceProviderInterface`).
+
+```php
+use Zend\ConfigAggregator\ConfigAggregator;
+use Zend\ConfigAggregator\ZendModuleProvider;
+use ACME;
+
+$aggregator = new ConfigAggregator([
+    new ZendModuleProvider(new ACME\Module()),
+]);
+```
+
+`ZendModuleProvider` accepts any object which represents the `zend-mvc`-Module.
