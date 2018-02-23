@@ -50,7 +50,6 @@ class ZendModuleProvider
     {
         return array_replace_recursive($this->getModuleConfig(), [
             $this->getDependenciesIdentifier() => $this->getModuleDependencies(),
-            'controllers' => $this->getControllerDependencies(),
         ]);
     }
 
@@ -129,15 +128,5 @@ class ZendModuleProvider
     public function setDependenciesIdentifier($dependenciesIdentifier)
     {
         $this->dependenciesIdentifier = (string) $dependenciesIdentifier;
-    }
-
-    private function getControllerDependencies()
-    {
-        $module = $this->module;
-        if (! $module instanceof ControllerProviderInterface) {
-            return [];
-        }
-
-        return $module->getControllerConfig();
     }
 }
