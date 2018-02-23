@@ -25,6 +25,7 @@
         "phpunit/phpunit": "^5.7.21 || ^6.3",
         "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-config": "^2.6 || ^3.0",
+        "zendframework/zend-modulemanager": "^2.8",
         "zendframework/zend-servicemanager": "^2.7.7 || ^3.1.1"
     },
     "suggest": {
