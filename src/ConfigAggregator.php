@@ -42,16 +42,21 @@ EOT;
      * @param null|string $cachedConfigFile Configuration cache file; config is
      *     loaded from this file if present, and written to it if not. null
      *     disables caching.
+     * @param array $postProcessors Array of processors. These may be callables, or
+     *     string values representing classes that act as processors. If the
+     *     latter, they must be instantiable without constructor arguments.
      */
     public function __construct(
         array $providers = [],
-        $cachedConfigFile = null
+        $cachedConfigFile = null,
+        array $postProcessors = []
     ) {
         if ($this->loadConfigFromCache($cachedConfigFile)) {
             return;
         }
 
         $this->config = $this->loadConfigFromProviders($providers);
+        $this->config = $this->postProcessConfig($postProcessors, $this->config);
         $this->cacheConfig($this->config, $cachedConfigFile);
     }
 
@@ -81,18 +86,48 @@ EOT;
     {
         if (is_string($provider)) {
             if (! class_exists($provider)) {
-                throw new InvalidConfigProviderException("Cannot read config from $provider - class cannot be loaded.");
+                throw InvalidConfigProviderException::fromNamedProvider($provider);
             }
             $provider = new $provider();
         }
 
         if (! is_callable($provider)) {
-            throw new InvalidConfigProviderException(
-                sprintf("Cannot read config from %s - config provider must be callable.", get_class($provider))
-            );
+            $type = $this->detectVariableType($provider);
+            throw InvalidConfigProviderException::fromUnsupportedType($type);
         }
 
         return $provider;
+    }
+
+    /**
+     * Resolve a processor.
+     *
+     * If the processor is a string class name, instantiates that class and
+     * tests if it is callable, returning it if true.
+     *
+     * If the processor is a callable, returns it verbatim.
+     *
+     * Raises an exception for any other condition.
+     *
+     * @param string|callable $processor
+     * @return callable
+     * @throws InvalidConfigProcessorException
+     */
+    private function resolveProcessor($processor)
+    {
+        if (is_string($processor)) {
+            if (! class_exists($processor)) {
+                throw InvalidConfigProcessorException::fromNamedProcessor($processor);
+            }
+            $processor = new $processor();
+        }
+
+        if (! is_callable($processor)) {
+            $type = $this->detectVariableType($processor);
+            throw InvalidConfigProcessorException::fromUnsupportedType($type);
+        }
+
+        return $processor;
     }
 
     /**
@@ -142,17 +177,7 @@ EOT;
     private function mergeConfig(&$mergedConfig, $config, callable $provider)
     {
         if (! is_array($config)) {
-            $type = '';
-
-            if (is_object($provider) && ! $provider instanceof Closure) {
-                $type = get_class($provider);
-            }
-            if ($provider instanceof Closure) {
-                $type = 'Closure';
-            }
-            if (is_callable($provider) && ! $provider instanceof Closure) {
-                $type = is_string($provider) ? $provider : gettype($provider);
-            }
+            $type = $this->detectVariableType($provider);
 
             throw new InvalidConfigProviderException(sprintf(
                 'Cannot read config from %s; does not return array',
@@ -230,5 +255,40 @@ EOT;
             date('c'),
             var_export($config, true)
         ));
+    }
+
+    /**
+     * @return array
+     */
+    private function postProcessConfig(array $processors, array $config)
+    {
+        foreach ($processors as $processor) {
+            $processor = $this->resolveProcessor($processor);
+            $config = $processor($config);
+        }
+
+        return $config;
+    }
+
+    /**
+     * @param Closure|object|callable $variable
+     *
+     * @return string
+     */
+    private function detectVariableType($variable)
+    {
+        if ($variable instanceof Closure) {
+            return 'Closure';
+        }
+
+        if (is_object($variable)) {
+            return get_class($variable);
+        }
+
+        if (is_callable($variable)) {
+            return is_string($variable) ? $variable : gettype($variable);
+        }
+
+        return gettype($variable);
     }
 }
