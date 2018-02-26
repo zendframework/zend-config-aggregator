@@ -7,6 +7,9 @@ production.
 It supports loading and merging configuration from multiple sources: PHP files,
 arrays, or INI/YAML/XML files (using [zend-config](https://docs.zendframework.com/zend-config/))
 
+It also provides the ability to post process the merged configuration to apply e.g. parameter
+handling like [symfony/dependency-injection](https://symfony.com/doc/current/service_container/parameters.html#parameters-in-configuration-files)
+
 ## Basic usage
 
 The standalone `ConfigAggregator` can be used to merge PHP-based configuration files:
@@ -70,3 +73,9 @@ $aggregator = new ConfigAggregator([
     new ZendConfigProvider('config/*.{json,yaml,php}'),
 ]);
 ```
+
+You can also supply [post processors](config-post-processors.md) for
+configuration. These are PHP callables that accept the merged configuration as
+an argument, do something with it, and return configuration on completion. This
+could be used, for example, to allow templating parameters that are used in
+multiple locations and resolving them to a single value later.

@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.1.0 - TBD
+
+### Added
+
+- [#12](https://github.com/zendframework/zend-config-aggregator/pull/12) adds
+  post-processing capabilities. Post processors are PHP callables (or class
+  names of classes that define `__invoke()`) that accept the configuration
+  array, and return a processed configuration array. Like providers, they are
+  provided as an array of values when defining the `ConfigAggregator` instance,
+  and passed as the third constructor argument. One use case is to re-use values
+  by referencing another configuration key, ala the Symfony DI ParameterBag.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 1.0.2 - TBD
 
 ### Added
