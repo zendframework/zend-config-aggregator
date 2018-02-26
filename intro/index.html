@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -48,9 +49,12 @@
                 <ul class="nav navbar-nav">
                 
                 
+                
                     <li >
                         <a href="..">Home</a>
                     </li>
+                
+                
                 
                 
                 
@@ -60,15 +64,28 @@
                 
                 
                 
+                
+                
                     <li >
                         <a href="../config-providers/">Config Providers</a>
                     </li>
                 
                 
                 
+                
+                
+                    <li >
+                        <a href="../config-post-processors/">Post Processors</a>
+                    </li>
+                
+                
+                
+                
+                
                     <li >
                         <a href="../caching/">Caching</a>
                     </li>
+                
                 
                 
                 </ul>
@@ -88,7 +105,7 @@
                 </li>
                 
                     <li>
-                        <a href="https://github.com/zendframework/zend-config-aggregator">
+                        <a href="https://github.com/zendframework/zend-config-aggregator/">
                             
                                 <i class="fa fa-github"></i>
                             
@@ -141,6 +158,8 @@ configuration. It was designed to be flexible in dev environments and fast in
 production.</p>
 <p>It supports loading and merging configuration from multiple sources: PHP files,
 arrays, or INI/YAML/XML files (using <a href="https://docs.zendframework.com/zend-config/">zend-config</a>)</p>
+<p>It also provides the ability to post process the merged configuration to apply e.g. parameter
+handling like <a href="https://symfony.com/doc/current/service_container/parameters.html#parameters-in-configuration-files">symfony/dependency-injection</a></p>
 <h2 id="basic-usage">Basic usage</h2>
 <p>The standalone <code>ConfigAggregator</code> can be used to merge PHP-based configuration files:</p>
 <pre class="codehilite"><code class="language-php">use Zend\ConfigAggregator\ConfigAggregator;
@@ -190,6 +209,12 @@ use Zend\ConfigAggregator\ZendConfigProvider;
 $aggregator = new ConfigAggregator([
     new ZendConfigProvider('config/*.{json,yaml,php}'),
 ]);</code></pre>
+
+<p>You can also supply <a href="../config-post-processors/">post processors</a> for
+configuration. These are PHP callables that accept the merged configuration as
+an argument, do something with it, and return configuration on completion. This
+could be used, for example, to allow templating parameters that are used in
+multiple locations and resolving them to a single value later.</p>
 
 <hr />
 
@@ -258,6 +283,8 @@ $aggregator = new ConfigAggregator([
     <script>var base_url = '..';</script>
     <script src="../js/scripts-0b6185f4a5.js"></script>
     <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+        <script src="../search/require.js"></script>
+        <script src="../search/search.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">
@@ -299,5 +326,6 @@ $aggregator = new ConfigAggregator([
 </div>
 
 </body>
+
 
 </html>

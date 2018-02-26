@@ -9,7 +9,7 @@
     <meta name="description" content="Lightweight library for collecting and merging configuration from different sources.">  
     <link rel="shortcut icon" href="../img/favicon.ico">
 
-    <title>Caching - zend-config-aggregator</title>
+    <title>Post Processors - zend-config-aggregator</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
@@ -74,16 +74,16 @@
                 
                 
                 
-                    <li >
-                        <a href="../config-post-processors/">Post Processors</a>
+                    <li class="active">
+                        <a href="./">Post Processors</a>
                     </li>
                 
                 
                 
                 
                 
-                    <li class="active">
-                        <a href="./">Caching</a>
+                    <li >
+                        <a href="../caching/">Caching</a>
                     </li>
                 
                 
@@ -124,11 +124,22 @@
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#caching">Caching</a></li>
+        <li class="main active"><a href="#post-processors">Post processors</a></li>
+        
+            <li><a href="#post-processor-examples">Post processor examples</a></li>
         
     
     </ul>
 
+    
+    <ul class="pager hidden-print">
+      <li class="previous">
+        <a rel="prev" href="../config-providers/"><i class="fa fa-arrow-left"></i> Previous</a>
+      </li>
+      <li class="next">
+        <a rel="next" href="../caching/">Next <i class="fa fa-arrow-right"></i></a>
+      </li>
+    </ul>
     
 </div></div>
         <div class="col-md-9" role="main">
@@ -138,50 +149,136 @@
   
     
   
-  <li class="active">Caching</li>
+  <li class="active">Post Processors</li>
 </ol>
 
-<h1 id="caching">Caching</h1>
-<p>Merging configuration on every request is not performant, particularly when
-using many configuration files. As such, zend-config-aggregator also
-provides the ability to enable a filesystem-based configuration cache.</p>
-<p>To enable the configuration cache, pass a cache file name as the second
-parameter to the <code>ConfigAggregator</code> constructor:</p>
-<pre class="codehilite"><code class="language-php">use Zend\ConfigAggregator\ArrayProvider;
-use Zend\ConfigAggregator\ConfigAggregator;
-use Zend\ConfigAggregator\PhpFileProvider;
+<h1 id="post-processors">Post processors</h1>
+<p>The <code>ConfigAggregator</code> can apply post processors to the merged configuration by
+aggregating "config processors" passed to its constructor. Each processor
+should be a PHP <code>callable</code> which consumes the merged configuration as its sole
+argument, and which then returns the processed configuration array.</p>
+<pre class="codehilite"><code class="language-php">$providers = [
+    function () {
+        return ['foo' =&gt; 'bar'];
+    },
+    new PhpFileProvider('*.global.php'),
+];
 
-$aggregator = new ConfigAggregator(
-    [
-        new ArrayProvider([ConfigAggregator::ENABLE_CACHE =&gt; true]),
-        new PhpFileProvider('*.global.php'),
-    ],
-    'data/config-cache.php'
-);</code></pre>
+$processors = [
+    function (array $config) {
+        return $config + ['post-processed' =&gt; true];
+    },
+];
 
-<p>When a cache file is specified, you will also need to add the
-<code>config_cache_enabled</code> key (which you can also specify via the
-<code>ConfigAggregator::ENABLE_CACHE</code> constant) somewhere within one of your
-configuration providers, and set it to boolean <code>true</code>. Using this approach, if
-you were to use the globbing pattern <code>{{,*.}global,{,*.}local}.php</code> (or similar)
-with the <code>PhpFileProvider</code>, you could drop a file named <code>enable-cache.local.php</code>
-into your production deployment with the following contents in order to enable
-configuration caching in production:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
-use Zend\ConfigAggregator\ConfigAggregator;
+$aggregator = new ConfigAggregator($providers, null, $processors);
+var_dump($aggregator-&gt;getMergedConfig());</code></pre>
 
-return [
-    ConfigAggregator::ENABLE_CACHE =&gt; true,
-];</code></pre>
+<p>Output from the example:</p>
+<pre class="codehilite"><code class="language-php">array(2) {
+  'foo' =&gt;
+  string(3) &quot;bar&quot;
+  'post-processed' =&gt;
+  bool(true)
+}</code></pre>
 
-<p>When caching is enabled, the <code>ConfigAggregator</code> does not iterate config
-providers. Because of that it is very fast, but after it is enabled, you cannot
-make any changes to configuration without clearing the cache. <strong>Caching should
-be used only in a production environment</strong>, and your deployment process should
-clear the cache.</p>
+<p>If the processor is a class name, the aggregator automatically instantiates it
+before invoking it; as such, any class name you use as a config provider
+<strong>must</strong> also define <code>__invoke()</code>, and that method <strong>must</strong> return an array and
+<strong>may</strong> consume the merged configuration as a parameter.</p>
+<p>Post processors can be used to mimic tools such as the <a href="https://symfony.com/doc/current/service_container/parameters.html">Symfony configuration
+parameter system</a>.
+As an example, you can specify a config processor which consumes the merged
+configuration and resolves templated parameters to other parameters within your
+configuration.</p>
+<h2 id="post-processor-examples">Post processor examples</h2>
+<h3 id="symfony-parameterbag-post-processor">Symfony ParameterBag Post Processor</h3>
+<p>The following example resolves templated parameters to either other parameters
+within your configuration, or a static set of substitutions. Templated
+parameters have the format <code>%&lt;config_key&gt;%</code>; <code>.</code> characters indicate an
+additional level of nesting. If you want to provide configuration parameters
+with <code>%</code> in the value, you must escape any occurences of <code>%</code> by using another
+<code>%</code>; as examples, <code>%%bar</code> or <code>%%foo%%</code>.</p>
+<p>In the following example, we define a provider that returns a nested array of
+configuration. We then define additional parameters and pass them to a 
+Symfony DI <code>ParameterBag</code>, which we develop a closure over. This closure checks
+for parameters in the passed configuration itself, and then attempts to resolve
+all configuration values based on the parameters in the <code>ParameterBag</code>.</p>
+<pre class="codehilite"><code class="language-php">
+$provider = [
+    function () {
+        return [
+            'session' =&gt; [
+                'cookie_domain' =&gt; '%cookie_domain%',
+            ],
+            'tracking' =&gt; [
+                'cookie_domain' =&gt; '%cookie_domain%',
+            ],
+            // Will be converted to %foo% after resolving
+            'config_parameter_with_percent' =&gt; '%%foo%%',
+        ];
+    },
+];
+
+$parameters = [
+    'cookie_domain' =&gt; 'example.com',
+];
+
+$bag = new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag($parameters);
+$resolver = function (array $config) use ($bag) {
+    $parametersFromConfiguration = isset($config['parameters']) ? $config['parameters'] : [];
+    $bag-&gt;add($parametersFromConfiguration);
+
+    // Resolve parameters which probably base on parameters
+    $bag-&gt;resolve();
+
+    // Replace all parameters within the configuration
+    $resolved = $bag-&gt;resolveValue($config);
+    $resolved['parameters'] = $bag-&gt;all();
+
+    return $bag-&gt;unescapeValue($resolved);
+};
+
+$aggregator = new ConfigAggregator($provider, null, [
+    $resolver,
+]);
+
+var_dump($aggregator-&gt;getMergedConfig());</code></pre>
+
+<p>The above would result in the following when complete:</p>
+<pre class="codehilite"><code class="language-php">array(2) {
+  'session' =&gt;
+  array(1) {
+    'cookie_domain' =&gt;
+    string(11) &quot;example.com&quot;
+  }
+  'tracking' =&gt;
+  array(1) {
+    'cookie_domain' =&gt;
+    string(11) &quot;example.com&quot;
+  }
+  'config_parameter_with_percent' =&gt;
+    string(7) &quot;%foo%&quot;
+  }
+  'parameters' =&gt;
+  array(1) {
+    'cookie_domain' =&gt;
+    string(11) &quot;example.com&quot;
+  }
+}</code></pre>
 
 <hr />
 
+
+<nav>
+  <ul class="pager hidden-print">
+    <li class="previous">
+      <a rel="prev" href="../config-providers/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../caching/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav>
 </div>
         
     </div>
