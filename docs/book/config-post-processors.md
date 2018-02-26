@@ -52,7 +52,9 @@ configuration.
 The following example resolves templated parameters to either other parameters
 within your configuration, or a static set of substitutions. Templated
 parameters have the format `%<config_key>%`; `.` characters indicate an
-additional level of nesting. If you want to provide configuration parameters with `%` in its value, you have to escape that `%` by using another `%` like `%%bar` or `%%foo%%`.
+additional level of nesting. If you want to provide configuration parameters
+with `%` in the value, you must escape any occurences of `%` by using another
+`%`; as examples, `%%bar` or `%%foo%%`.
 
 In the following example, we define a provider that returns a nested array of
 configuration. We then define additional parameters and pass them to a 
@@ -85,6 +87,7 @@ $bag = new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag($par
 $resolver = function (array $config) use ($bag) {
     $parametersFromConfiguration = isset($config['parameters']) ? $config['parameters'] : [];
     $bag->add($parametersFromConfiguration);
+
     // Resolve parameters which probably base on parameters
     $bag->resolve();
     
