@@ -170,7 +170,7 @@ To provide configurations from old Modules which were created for `zendframework
 This provider would parse the module class for the `Module::getConfig` method aswell as for the `Module::getServiceConfig` (declared by `ServiceProviderInterface`).
 
 ```bash
-$ composer reuqire zendframework/zend-config-aggregator-modulemanager
+$ composer require zendframework/zend-config-aggregator-modulemanager
 ```
 
 Once installed, you may use as many `ZendModuleProvider` instances as you need:
