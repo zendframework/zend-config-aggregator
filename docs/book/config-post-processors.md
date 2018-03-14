@@ -130,4 +130,8 @@ array(2) {
 }
 ```
 
-There is an extension available as [zendframework/zend-config-aggregator-parameters](https://github.com/zendframework/zend-config-aggregator-parameters)
+There is an extension for this feature available: [zendframework/zend-config-aggregator-parameters](https://github.com/zendframework/zend-config-aggregator-parameters)
+
+```bash
+$ composer require zendframework/zend-config-aggregator-parameters
+```
