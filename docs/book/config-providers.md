@@ -177,7 +177,7 @@ Once installed, you may use as many `ZendModuleProvider` instances as you need:
 
 ```php
 use Zend\ConfigAggregator\ConfigAggregator;
-use Zend\ConfigAggregator\ModuleManager\ZendModuleProvider;
+use Zend\ConfigAggregatorModuleManager\ZendModuleProvider;
 use ACME;
 
 $aggregator = new ConfigAggregator([
