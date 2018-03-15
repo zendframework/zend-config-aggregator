@@ -18,6 +18,9 @@ use ZendTest\ConfigAggregator\Resources\BarConfigProvider;
 use ZendTest\ConfigAggregator\Resources\FooConfigProvider;
 use ZendTest\ConfigAggregator\Resources\FooPostProcessor;
 
+use function file_exists;
+use function var_export;
+
 class ConfigAggregatorTest extends TestCase
 {
     public function testConfigAggregatorRisesExceptionIfProviderClassDoesNotExist()
