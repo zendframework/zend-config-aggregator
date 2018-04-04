@@ -166,8 +166,14 @@ for more details.
 
 ### ZendModuleProvider
 
-To provide configurations from old Modules which were created for `zendframework/zend-mvc` applications, you can use the `ZendModuleProvider` which is provided by the [zendframework/zend-config-aggregator-modulemanager](https://github.com/zendframework/zend-config-aggregator-modulemanager) extension.
-This provider would parse the module class for the `Module::getConfig` method aswell as for the `Module::getServiceConfig` (declared by `ServiceProviderInterface`).
+To provide configuration using `Module` classes created for
+`zendframework/zend-mvc` applications, you can use the `ZendModuleProvider`,
+via the package [zendframework/zend-config-aggregator-modulemanager](https://github.com/zendframework/zend-config-aggregator-modulemanager).
+This provider introspects the module class for its `Module::getConfig()` method
+as well as its `Module::getServiceConfig()` method (declared via the
+`ServiceProviderInterface`).
+
+To use the extension, first install its package:
 
 ```bash
 $ composer require zendframework/zend-config-aggregator-modulemanager
@@ -185,6 +191,5 @@ $aggregator = new ConfigAggregator([
 ]);
 ```
 
-`ZendModuleProvider` accepts any object which represents the `zend-mvc`-Module. For more details, please refer
-to [the zend-config-aggregator-modulemanager manual](https://docs.zendframework.com/zend-config-aggregator-modulemanager/) 
-for more details.
+`ZendModuleProvider` accepts any object which represents a `zend-mvc` module.
+For more details, please refer to the [zend-config-aggregator-modulemanager manual](https://docs.zendframework.com/zend-config-aggregator-modulemanager/).
