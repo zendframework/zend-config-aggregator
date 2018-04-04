@@ -10,6 +10,8 @@ namespace Zend\ConfigAggregator;
 
 use RuntimeException;
 
+use function sprintf;
+
 class InvalidConfigProviderException extends RuntimeException
 {
 

@@ -9,6 +9,8 @@ namespace Zend\ConfigAggregator;
 
 use RuntimeException;
 
+use function sprintf;
+
 class InvalidConfigProcessorException extends RuntimeException
 {
 
