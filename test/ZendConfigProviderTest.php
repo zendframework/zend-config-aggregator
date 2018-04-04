@@ -10,7 +10,6 @@ namespace ZendTest\ConfigAggregator;
 
 use PHPUnit\Framework\TestCase;
 use Zend\ConfigAggregator\ZendConfigProvider;
-use Zend\Stdlib\ArrayUtils;
 
 class ZendConfigProviderTest extends TestCase
 {
