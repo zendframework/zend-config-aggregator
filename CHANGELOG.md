@@ -24,11 +24,14 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 1.1.1 - TBD
+## 1.1.1 - 2018-04-04
 
 ### Added
 
-- Nothing.
+- [#18](https://github.com/zendframework/zend-config-aggregator/pull/18) adds
+  a package suggestion for [zend-config-aggregator-modulemanager](https://github.com/zendframework/zend-config-aggregator-modulemanager),
+  which supplies a custom provider for using zend-mvc `Module` classes as
+  configuration providers.
 
 ### Changed
 
