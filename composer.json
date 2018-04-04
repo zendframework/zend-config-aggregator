@@ -28,7 +28,8 @@
         "zendframework/zend-servicemanager": "^2.7.7 || ^3.1.1"
     },
     "suggest": {
-        "zendframework/zend-config": "Allows loading configuration from XML, INI, YAML, and JSON files"
+        "zendframework/zend-config": "Allows loading configuration from XML, INI, YAML, and JSON files",
+        "zendframework/zend-config-aggregator-modulemanager": "Allows loading configuration from zend-mvc Module classes"
     },
     "autoload": {
         "psr-4": {
