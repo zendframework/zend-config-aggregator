@@ -13,7 +13,7 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../css/styles-482aa2add1.css">
+    <link rel="stylesheet" href="../css/styles-288837cc22.css">
 
     
 </head>
@@ -279,6 +279,27 @@ type based on file extension.</p>
 <p>Some config readers (in particular, YAML) may need additional dependencies;
 please refer to <a href="https://docs.zendframework.com/zend-config/reader/">the zend-config manual</a>
 for more details.</p>
+<h3 id="zendmoduleprovider">ZendModuleProvider</h3>
+<p>To provide configuration using <code>Module</code> classes created for
+<code>zendframework/zend-mvc</code> applications, you can use the <code>ZendModuleProvider</code>,
+via the package <a href="https://github.com/zendframework/zend-config-aggregator-modulemanager">zendframework/zend-config-aggregator-modulemanager</a>.
+This provider introspects the module class for its <code>Module::getConfig()</code> method
+as well as its <code>Module::getServiceConfig()</code> method (declared via the
+<code>ServiceProviderInterface</code>).</p>
+<p>To use the extension, first install its package:</p>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-config-aggregator-modulemanager</code></pre>
+
+<p>Once installed, you may use as many <code>ZendModuleProvider</code> instances as you need:</p>
+<pre class="codehilite"><code class="language-php">use Zend\ConfigAggregator\ConfigAggregator;
+use Zend\ConfigAggregatorModuleManager\ZendModuleProvider;
+use ACME;
+
+$aggregator = new ConfigAggregator([
+    new ZendModuleProvider(new ACME\Module()),
+]);</code></pre>
+
+<p><code>ZendModuleProvider</code> accepts any object which represents a <code>zend-mvc</code> module.
+For more details, please refer to the <a href="https://docs.zendframework.com/zend-config-aggregator-modulemanager/">zend-config-aggregator-modulemanager manual</a>.</p>
 
 <hr />
 
