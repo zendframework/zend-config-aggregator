@@ -30,7 +30,7 @@
     "suggest": {
         "zendframework/zend-config": "Allows loading configuration from XML, INI, YAML, and JSON files",
         "zendframework/zend-config-aggregator-modulemanager": "Allows loading configuration from zend-mvc Module classes",
-        "zendframework/zend-config-aggregator-parameters": "Allows usage of parameters within your configuration"
+        "zendframework/zend-config-aggregator-parameters": "Allows usage of templated parameters within your configuration"
     },
     "autoload": {
         "psr-4": {
