@@ -10,13 +10,16 @@ namespace ZendTest\ConfigAggregator;
 
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
-use StdClass;
+use stdClass;
 use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregator\InvalidConfigProcessorException;
 use Zend\ConfigAggregator\InvalidConfigProviderException;
 use ZendTest\ConfigAggregator\Resources\BarConfigProvider;
 use ZendTest\ConfigAggregator\Resources\FooConfigProvider;
 use ZendTest\ConfigAggregator\Resources\FooPostProcessor;
+
+use function file_exists;
+use function var_export;
 
 class ConfigAggregatorTest extends TestCase
 {
@@ -29,7 +32,7 @@ class ConfigAggregatorTest extends TestCase
     public function testConfigAggregatorRisesExceptionIfProviderIsNotCallable()
     {
         $this->expectException(InvalidConfigProviderException::class);
-        new ConfigAggregator([StdClass::class]);
+        new ConfigAggregator([stdClass::class]);
     }
 
     public function testConfigAggregatorMergesConfigFromProviders()
@@ -106,7 +109,7 @@ class ConfigAggregatorTest extends TestCase
     public function testConfigAggregatorRisesExceptionIfProcessorIsNotCallable()
     {
         $this->expectException(InvalidConfigProcessorException::class);
-        new ConfigAggregator([], null, [StdClass::class]);
+        new ConfigAggregator([], null, [stdClass::class]);
     }
 
     public function testProcessorCanBeClosure()
