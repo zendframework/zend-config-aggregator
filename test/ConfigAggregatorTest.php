@@ -10,6 +10,7 @@ namespace ZendTest\ConfigAggregator;
 
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 use stdClass;
 use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregator\InvalidConfigProcessorException;
@@ -78,6 +79,78 @@ class ConfigAggregatorTest extends TestCase
         $cachedConfig = include $cacheFile;
         $this->assertInternalType('array', $cachedConfig);
         $this->assertEquals(['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true], $cachedConfig);
+    }
+
+    public function testConfigAggregatorSetsDefaultModeOnCache()
+    {
+        vfsStream::setup(__FUNCTION__);
+        $cacheFile = vfsStream::url(__FUNCTION__) . '/expressive_config_loader';
+        new ConfigAggregator([
+            function () {
+                return ['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true];
+            }
+        ], $cacheFile);
+        $this->assertEquals(0644, fileperms($cacheFile) & 0777);
+    }
+
+    public function testConfigAggregatorSetsModeOnCache()
+    {
+        vfsStream::setup(__FUNCTION__);
+        $cacheFile = vfsStream::url(__FUNCTION__) . '/expressive_config_loader';
+        new ConfigAggregator([
+            function () {
+                return ['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true];
+            }
+        ], $cacheFile, 0600);
+        $this->assertEquals(0600, fileperms($cacheFile) & 0777);
+    }
+
+    public function testConfigAggregatorSetsHandlesUnwritableCache()
+    {
+        vfsStream::setup(__FUNCTION__);
+        $root = vfsStream::url(__FUNCTION__);
+        chmod($root, 0400);
+        $cacheFile = $root . '/expressive_config_loader';
+
+        $foo = function () use ($cacheFile) {
+            new ConfigAggregator([
+                function () {
+                    return ['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true];
+                }
+            ], $cacheFile, 0600);
+        };
+        @$foo(); // suppress warning
+
+        $errors = error_get_last();
+        $this->assertNotNull($errors);
+        $this->assertFalse(file_exists($cacheFile));
+    }
+
+    public function testConfigAggregatorRespectsCacheLock()
+    {
+        $expected = [
+            'cache' => 'locked',
+            ConfigAggregator::ENABLE_CACHE => true,
+        ];
+
+        vfsStream::setup(__FUNCTION__);
+        $cacheFile = vfsStream::url(__FUNCTION__) . '/expressive_config_loader';
+
+        $fh = fopen($cacheFile, 'c');
+        flock($fh, LOCK_EX);
+        fputs($fh, '<' . '?php return ' . var_export($expected, true) . ';');
+
+        $method = new ReflectionMethod(ConfigAggregator::class, 'cacheConfig');
+        $method->setAccessible(true);
+        $method->invoke(
+            new ConfigAggregator(),
+            ['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true],
+            $cacheFile,
+            0644
+        );
+        fclose($fh);
+
+        $this->assertEquals($expected, require $cacheFile);
     }
 
     public function testConfigAggregatorCanLoadConfigFromCache()

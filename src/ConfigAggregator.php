@@ -60,11 +60,13 @@ EOT;
      * @param array $postProcessors Array of processors. These may be callables, or
      *     string values representing classes that act as processors. If the
      *     latter, they must be instantiable without constructor arguments.
+     * @param int $mode File mode to set on cached config
      */
     public function __construct(
         array $providers = [],
         $cachedConfigFile = null,
-        array $postProcessors = []
+        array $postProcessors = [],
+        $mode = 0644
     ) {
         if ($this->loadConfigFromCache($cachedConfigFile)) {
             return;
@@ -72,7 +74,7 @@ EOT;
 
         $this->config = $this->loadConfigFromProviders($providers);
         $this->config = $this->postProcessConfig($postProcessors, $this->config);
-        $this->cacheConfig($this->config, $cachedConfigFile);
+        $this->cacheConfig($this->config, $cachedConfigFile, $mode);
     }
 
     /**
@@ -253,8 +255,9 @@ EOT;
      *
      * @param array $config
      * @param null|string $cachedConfigFile
+     * @param int $mode
      */
-    private function cacheConfig(array $config, $cachedConfigFile)
+    private function cacheConfig(array $config, $cachedConfigFile, $mode)
     {
         if (null === $cachedConfigFile) {
             return;
@@ -264,12 +267,27 @@ EOT;
             return;
         }
 
-        file_put_contents($cachedConfigFile, sprintf(
+        $fh = fopen($cachedConfigFile, 'c');
+        if (! $fh) {
+            return;
+        }
+        if (! flock($fh, LOCK_EX | LOCK_NB)) {
+            fclose($fh);
+            return;
+        }
+
+        chmod($cachedConfigFile, $mode);
+        ftruncate($fh, 0);
+
+        fputs($fh, sprintf(
             self::CACHE_TEMPLATE,
             get_class($this),
             date('c'),
             var_export($config, true)
         ));
+
+        flock($fh, LOCK_UN);
+        fclose($fh);
     }
 
     /**
