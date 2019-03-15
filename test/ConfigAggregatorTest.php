@@ -101,7 +101,7 @@ class ConfigAggregatorTest extends TestCase
             function () {
                 return ['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true];
             }
-        ], $cacheFile, 0600);
+        ], $cacheFile, [], 0600);
         $this->assertEquals(0600, fileperms($cacheFile) & 0777);
     }
 
@@ -117,7 +117,7 @@ class ConfigAggregatorTest extends TestCase
                 function () {
                     return ['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true];
                 }
-            ], $cacheFile, 0600);
+            ], $cacheFile, [], 0600);
         };
         @$foo(); // suppress warning
 
