@@ -148,6 +148,7 @@ class ConfigAggregatorTest extends TestCase
             $cacheFile,
             0644
         );
+        flock($fh, LOCK_UN);
         fclose($fh);
 
         $this->assertEquals($expected, require $cacheFile);
