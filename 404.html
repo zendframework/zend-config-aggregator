@@ -7,11 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Lightweight library for collecting and merging configuration from different sources.">  
-    <link rel="shortcut icon" href="../img/favicon.ico">
+    <link rel="shortcut icon" href="//img/favicon.ico">
 
-    <title>Introduction - zend-config-aggregator - Zend Framework Docs</title>
+    <title>zend-config-aggregator - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../css/styles-f3b53f5ceb.css">
+    <link rel="stylesheet" href="//css/styles-f3b53f5ceb.css">
 </head>
 <body id="page-top">
 
@@ -31,7 +31,7 @@
             
             <span class="navbar-brand">
                 <a class="logo-link" href="https://framework.zend.com/" data-tooltip data-placement="bottom" title="Go to the ZF homepage">
-                    <img src="../img/zend-framework-logo.svg" height="28" alt="Zend Framework">
+                    <img src="//img/zend-framework-logo.svg" height="28" alt="Zend Framework">
                 </a>
             </span>
         </div>
@@ -66,7 +66,7 @@
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="..">zend-config-aggregator</a>
+            <a href="/.">zend-config-aggregator</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -74,26 +74,26 @@
         <ul class="subnavigation__list">
             
                 
-                    <li class="subnavigation__list-item subnavigation__list-item--active">
-                        <a href="./" class="subnavigation__link">Introduction</a>
+                    <li class="subnavigation__list-item ">
+                        <a href="/intro/" class="subnavigation__link">Introduction</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../config-providers/" class="subnavigation__link">Config Providers</a>
+                        <a href="/config-providers/" class="subnavigation__link">Config Providers</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../config-post-processors/" class="subnavigation__link">Post Processors</a>
+                        <a href="/config-post-processors/" class="subnavigation__link">Post Processors</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../caching/" class="subnavigation__link">Caching</a>
+                        <a href="/caching/" class="subnavigation__link">Caching</a>
                     </li>
                 
             
@@ -166,144 +166,18 @@
             <div class="col-md-9 col-xs-12 content" role="main">
             <!-- content:begin -->
                 
-                    <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-    <li><a href="https://framework.zend.com/">Home</a></li>
 
-    
-        <li><a href="https://docs.zendframework.com/">Documentation</a></li>
+<h1 class="content__title">404</h1>
+<blockquote>
+    <h3>Something went wrong!</h3>
+    <p>
+        We're sorry, but the page you are looking for does not exist.
+    </p>
+</blockquote>
 
-        
-            <li><a href="..">zend-config-aggregator</a></li>
-
-            
-
-            <li class="active">Introduction</li>
-        
-    
-</ol>
+<a href="/" class="btn btn-default" role="button">Go to homepage</a>
 
 
-    
-
-    
-    
-
-    
-    
-        <div class="toc">
-            <h6 class="toc__headline">In This Article</h6>
-            <ul class="toc__list">
-                
-                    <li class="toc__entry">
-                        <a href="#basic-usage" class="toc__link">Basic usage</a>
-                    </li>
-                
-            </ul>
-        </div>
-    
-
-
-    <h1 id="introduction">Introduction</h1>
-<p><code>zend-config-aggregator</code> is a lightweight library for managing application
-configuration. It was designed to be flexible in dev environments and fast in
-production.</p>
-<p>It supports loading and merging configuration from multiple sources: PHP files,
-arrays, or INI/YAML/XML files (using <a href="https://docs.zendframework.com/zend-config/">zend-config</a>)</p>
-<p>It also provides the ability to post process the merged configuration to apply e.g. parameter
-handling like <a href="https://symfony.com/doc/current/service_container/parameters.html#parameters-in-configuration-files">symfony/dependency-injection</a></p>
-<h2 id="basic-usage">Basic usage</h2>
-<p>The standalone <code>ConfigAggregator</code> can be used to merge PHP-based configuration files:</p>
-<pre class="codehilite"><code class="language-php">use Zend\ConfigAggregator\ConfigAggregator;
-use Zend\ConfigAggregator\PhpFileProvider;
-
-$aggregator = new ConfigAggregator([
-    new PhpFileProvider('*.global.php'),
-]);
-
-var_dump($aggregator-&gt;getMergedConfig());</code></pre>
-
-<p>Using this provider, each file should return a PHP array:</p>
-<pre class="codehilite"><code class="language-php">// db.global.php
-return [
-    'db' =&gt; [
-        'dsn' =&gt; 'mysql:...',
-    ],
-];
-
-// cache.global.php
-return [
-    'cache_storage' =&gt; 'redis',
-    'redis' =&gt; [ ... ],
-];</code></pre>
-
-<p>Result:</p>
-<pre class="codehilite"><code class="language-php">array(3) {
-  'db' =&gt;
-  array(1) {
-    'dsn' =&gt;
-    string(9) "mysql:..."
-  }
-  'cache_storage' =&gt;
-  string(5) "redis"
-  'redis' =&gt;
-  array(0) {
-     ...
-  }
-}</code></pre>
-
-<p>Configuration is merged in the same order as it is passed, with later entries having precedence.</p>
-<p>Together with <code>zend-config</code>, <code>zend-config-aggregator</code> can be also used to load
-configuration in different formats, including YAML, JSON, XML, or INI:</p>
-<pre class="codehilite"><code class="language-php">use Zend\ConfigAggregator\ConfigAggregator;
-use Zend\ConfigAggregator\ZendConfigProvider;
-
-$aggregator = new ConfigAggregator([
-    new ZendConfigProvider('config/*.{json,yaml,php}'),
-]);</code></pre>
-
-<p>You can also supply <a href="../config-post-processors/">post processors</a> for
-configuration. These are PHP callables that accept the merged configuration as
-an argument, do something with it, and return configuration on completion. This
-could be used, for example, to allow templating parameters that are used in
-multiple locations and resolving them to a single value later.</p>
-
-
-
-    <nav>
-    <ul class="page-nav hidden-print">
-
-        
-        <li class="page-nav__item">
-            
-                <a rel="prev" class="page-nav__link page-nav__link--prev" href="..">
-                    <i class="fa fa-chevron-left"></i> Previous
-                </a>
-            
-        </li>
-
-        
-        <li class="page-nav__item">
-            
-                <a rel="next" class="page-nav__link page-nav__link--next" href="../config-providers/">
-                    Next <i class="fa fa-chevron-right"></i>
-                </a>
-            
-        </li>
-    </ul>
-</nav>
-
-
-
-    <div class="help-wanted">
-        <p>
-            Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-config-aggregator/edit/master/docs/book/intro.md" target="_blank" class="help-wanted__link">
-                Edit this page on GitHub!
-            </a>
-        </p>
-    </div>
-
-                
             <!-- content:end -->
             </div>
             <div class="col-md-3 col-xs-12 sidebar">
@@ -319,7 +193,7 @@ multiple locations and resolving them to a single value later.</p>
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="..">zend-config-aggregator</a>
+            <a href="/.">zend-config-aggregator</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -327,26 +201,26 @@ multiple locations and resolving them to a single value later.</p>
         <ul class="subnavigation__list">
             
                 
-                    <li class="subnavigation__list-item subnavigation__list-item--active">
-                        <a href="./" class="subnavigation__link">Introduction</a>
+                    <li class="subnavigation__list-item ">
+                        <a href="/intro/" class="subnavigation__link">Introduction</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../config-providers/" class="subnavigation__link">Config Providers</a>
+                        <a href="/config-providers/" class="subnavigation__link">Config Providers</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../config-post-processors/" class="subnavigation__link">Post Processors</a>
+                        <a href="/config-post-processors/" class="subnavigation__link">Post Processors</a>
                     </li>
                 
             
                 
                     <li class="subnavigation__list-item ">
-                        <a href="../caching/" class="subnavigation__link">Caching</a>
+                        <a href="/caching/" class="subnavigation__link">Caching</a>
                     </li>
                 
             
@@ -421,11 +295,11 @@ multiple locations and resolving them to a single value later.</p>
 </footer>
 
     <script>
-        var base_url = '..',
+        var base_url = '/',
             siteName = 'zend-config-aggregator';
     </script>
-    <script src="../js/scripts-8d7ae56abf.js"></script>
-        <script src="../search/main.js"></script>
+    <script src="//js/scripts-8d7ae56abf.js"></script>
+        <script src="/search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
