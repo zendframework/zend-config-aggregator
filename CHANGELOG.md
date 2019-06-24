@@ -28,7 +28,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#21](https://github.com/zendframework/zend-config-aggregator/pull/21) adds support for PHP 7.3.
 
 ### Changed
 
