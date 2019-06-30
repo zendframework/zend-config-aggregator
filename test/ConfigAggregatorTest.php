@@ -84,13 +84,15 @@ class ConfigAggregatorTest extends TestCase
     public function testConfigAggregatorSetsDefaultModeOnCache()
     {
         vfsStream::setup(__FUNCTION__);
+        $defaultFile = vfsStream::url(__FUNCTION__ . '/expressive_config_test');
+        touch($defaultFile);
         $cacheFile = vfsStream::url(__FUNCTION__) . '/expressive_config_loader';
         new ConfigAggregator([
             function () {
                 return ['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true];
             }
         ], $cacheFile);
-        $this->assertEquals(0644, fileperms($cacheFile) & 0777);
+        $this->assertEquals(fileperms($defaultFile), fileperms($cacheFile));
     }
 
     public function testConfigAggregatorSetsModeOnCache()
@@ -99,9 +101,13 @@ class ConfigAggregatorTest extends TestCase
         $cacheFile = vfsStream::url(__FUNCTION__) . '/expressive_config_loader';
         new ConfigAggregator([
             function () {
-                return ['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true];
+                return [
+                    'foo' => 'bar',
+                    ConfigAggregator::ENABLE_CACHE => true,
+                    ConfigAggregator::CACHE_FILEMODE => 0600
+                ];
             }
-        ], $cacheFile, [], 0600);
+        ], $cacheFile);
         $this->assertEquals(0600, fileperms($cacheFile) & 0777);
     }
 
@@ -117,7 +123,7 @@ class ConfigAggregatorTest extends TestCase
                 function () {
                     return ['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true];
                 }
-            ], $cacheFile, [], 0600);
+            ], $cacheFile);
         };
         @$foo(); // suppress warning
 
@@ -145,8 +151,7 @@ class ConfigAggregatorTest extends TestCase
         $method->invoke(
             new ConfigAggregator(),
             ['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true],
-            $cacheFile,
-            0644
+            $cacheFile
         );
         flock($fh, LOCK_UN);
         fclose($fh);

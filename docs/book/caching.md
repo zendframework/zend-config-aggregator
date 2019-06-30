@@ -46,8 +46,8 @@ be used only in a production environment**, and your deployment process should
 clear the cache.
 
 You can control the permissions used when creating the cache file by passing 
-the [file mode] as a third parameter. Use this if your config contains
-sensitive information such as database passwords:
+the [file mode] in the `ConfigAggregator::CACHE_FILEMODE` configuration. Use 
+this if your config contains sensitive information such as database passwords:
 
 ```php
 use Zend\ConfigAggregator\ArrayProvider;
@@ -56,12 +56,18 @@ use Zend\ConfigAggregator\PhpFileProvider;
 
 $aggregator = new ConfigAggregator(
     [
-        new ArrayProvider([ConfigAggregator::ENABLE_CACHE => true]),
+        new ArrayProvider([
+            ConfigAggregator::ENABLE_CACHE => true,
+            ConfigAggregator::CACHE_FILEMODE => 0600
+        ]),
         new PhpFileProvider('*.global.php'),
     ],
     'data/config-cache.php',
     0600 // only owner can read and write
 );
 ```
+
+Note that mode is an octal value. To to ensure the expected operation, you need 
+to prefix mode with a zero (eg 0644).
 
 [file mode]: http://php.net/manual/en/function.chmod.php

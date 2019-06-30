@@ -14,10 +14,15 @@ use Zend\Stdlib\ArrayUtils\MergeRemoveKey;
 use Zend\Stdlib\ArrayUtils\MergeReplaceKeyInterface;
 
 use function array_key_exists;
+use function chmod;
 use function class_exists;
 use function date;
+use function fclose;
 use function file_exists;
-use function file_put_contents;
+use function flock;
+use function fopen;
+use function fputs;
+use function ftruncate;
 use function get_class;
 use function gettype;
 use function is_array;
@@ -34,6 +39,8 @@ use function var_export;
 class ConfigAggregator
 {
     const ENABLE_CACHE = 'config_cache_enabled';
+
+    const CACHE_FILEMODE = 'config_cache_filemode';
 
     const CACHE_TEMPLATE = <<< 'EOT'
 <?php
@@ -60,13 +67,11 @@ EOT;
      * @param array $postProcessors Array of processors. These may be callables, or
      *     string values representing classes that act as processors. If the
      *     latter, they must be instantiable without constructor arguments.
-     * @param int $mode File mode to set on cached config
      */
     public function __construct(
         array $providers = [],
         $cachedConfigFile = null,
-        array $postProcessors = [],
-        $mode = 0644
+        array $postProcessors = []
     ) {
         if ($this->loadConfigFromCache($cachedConfigFile)) {
             return;
@@ -74,7 +79,7 @@ EOT;
 
         $this->config = $this->loadConfigFromProviders($providers);
         $this->config = $this->postProcessConfig($postProcessors, $this->config);
-        $this->cacheConfig($this->config, $cachedConfigFile, $mode);
+        $this->cacheConfig($this->config, $cachedConfigFile);
     }
 
     /**
@@ -257,7 +262,7 @@ EOT;
      * @param null|string $cachedConfigFile
      * @param int $mode
      */
-    private function cacheConfig(array $config, $cachedConfigFile, $mode)
+    private function cacheConfig(array $config, $cachedConfigFile)
     {
         if (null === $cachedConfigFile) {
             return;
@@ -266,6 +271,8 @@ EOT;
         if (empty($config[static::ENABLE_CACHE])) {
             return;
         }
+
+        $mode = isset($config[self::CACHE_FILEMODE]) ? $config[self::CACHE_FILEMODE] : null;
 
         $fh = fopen($cachedConfigFile, 'c');
         if (! $fh) {
@@ -276,7 +283,10 @@ EOT;
             return;
         }
 
-        chmod($cachedConfigFile, $mode);
+        if ($mode !== null) {
+            chmod($cachedConfigFile, $mode);
+        }
+
         ftruncate($fh, 0);
 
         fputs($fh, sprintf(
