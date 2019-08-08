@@ -273,8 +273,9 @@ EOT;
         }
 
         $mode = isset($config[self::CACHE_FILEMODE]) ? $config[self::CACHE_FILEMODE] : null;
+        $tempFile = sys_get_temp_dir() . '/' . basename($cachedConfigFile) . '.tmp';
 
-        $fh = fopen($cachedConfigFile, 'c');
+        $fh = fopen($tempFile, 'c');
         if (! $fh) {
             return;
         }
@@ -284,7 +285,7 @@ EOT;
         }
 
         if ($mode !== null) {
-            chmod($cachedConfigFile, $mode);
+            chmod($tempFile, $mode);
         }
 
         ftruncate($fh, 0);
@@ -295,6 +296,8 @@ EOT;
             date('c'),
             var_export($config, true)
         ));
+
+        rename($tempFile, $cachedConfigFile);
 
         flock($fh, LOCK_UN);
         fclose($fh);
