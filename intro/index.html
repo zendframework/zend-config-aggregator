@@ -255,17 +255,16 @@ arrays, or INI/YAML/XML files (using <a href="https://docs.zendframework.com/zen
 handling like <a href="https://symfony.com/doc/current/service_container/parameters.html#parameters-in-configuration-files">symfony/dependency-injection</a></p>
 <h2 id="basic-usage">Basic usage</h2>
 <p>The standalone <code>ConfigAggregator</code> can be used to merge PHP-based configuration files:</p>
-<pre class="codehilite"><code class="language-php">use Zend\ConfigAggregator\ConfigAggregator;
+<p> <pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregator\PhpFileProvider;
 
 $aggregator = new ConfigAggregator([
     new PhpFileProvider('*.global.php'),
 ]);
 
-var_dump($aggregator-&gt;getMergedConfig());</code></pre>
-
+var_dump($aggregator-&gt;getMergedConfig());</code></pre></p>
 <p>Using this provider, each file should return a PHP array:</p>
-<pre class="codehilite"><code class="language-php">// db.global.php
+<p> <pre class=codehilite><code class=language-php>// db.global.php
 return [
     'db' =&gt; [
         'dsn' =&gt; 'mysql:...',
@@ -276,33 +275,30 @@ return [
 return [
     'cache_storage' =&gt; 'redis',
     'redis' =&gt; [ ... ],
-];</code></pre>
-
+];</code></pre></p>
 <p>Result:</p>
-<pre class="codehilite"><code class="language-php">array(3) {
+<p> <pre class=codehilite><code class=language-php>array(3) {
   'db' =&gt;
   array(1) {
     'dsn' =&gt;
-    string(9) "mysql:..."
+    string(9) &quot;mysql:...&quot;
   }
   'cache_storage' =&gt;
-  string(5) "redis"
+  string(5) &quot;redis&quot;
   'redis' =&gt;
   array(0) {
      ...
   }
-}</code></pre>
-
+}</code></pre></p>
 <p>Configuration is merged in the same order as it is passed, with later entries having precedence.</p>
 <p>Together with <code>zend-config</code>, <code>zend-config-aggregator</code> can be also used to load
 configuration in different formats, including YAML, JSON, XML, or INI:</p>
-<pre class="codehilite"><code class="language-php">use Zend\ConfigAggregator\ConfigAggregator;
+<p> <pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregator\ZendConfigProvider;
 
 $aggregator = new ConfigAggregator([
     new ZendConfigProvider('config/*.{json,yaml,php}'),
-]);</code></pre>
-
+]);</code></pre></p>
 <p>You can also supply <a href="../config-post-processors/">post processors</a> for
 configuration. These are PHP callables that accept the merged configuration as
 an argument, do something with it, and return configuration on completion. This
@@ -341,7 +337,7 @@ multiple locations and resolving them to a single value later.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-config-aggregator/edit/master/docs/intro.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-config-aggregator/edit/master/docs/book/intro.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

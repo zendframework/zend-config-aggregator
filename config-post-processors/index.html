@@ -250,7 +250,7 @@
 aggregating "config processors" passed to its constructor. Each processor
 should be a PHP <code>callable</code> which consumes the merged configuration as its sole
 argument, and which then returns the processed configuration array.</p>
-<pre class="codehilite"><code class="language-php">$providers = [
+<p> <pre class=codehilite><code class=language-php>$providers = [
     function () {
         return ['foo' =&gt; 'bar'];
     },
@@ -264,16 +264,14 @@ $processors = [
 ];
 
 $aggregator = new ConfigAggregator($providers, null, $processors);
-var_dump($aggregator-&gt;getMergedConfig());</code></pre>
-
+var_dump($aggregator-&gt;getMergedConfig());</code></pre></p>
 <p>Output from the example:</p>
-<pre class="codehilite"><code class="language-php">array(2) {
+<p> <pre class=codehilite><code class=language-php>array(2) {
   'foo' =&gt;
-  string(3) "bar"
+  string(3) &quot;bar&quot;
   'post-processed' =&gt;
   bool(true)
-}</code></pre>
-
+}</code></pre></p>
 <p>If the processor is a class name, the aggregator automatically instantiates it
 before invoking it; as such, any class name you use as a config provider
 <strong>must</strong> also define <code>__invoke()</code>, and that method <strong>must</strong> return an array and
@@ -284,7 +282,7 @@ As an example, you can specify a config processor which consumes the merged
 configuration and resolves templated parameters to other parameters within your
 configuration.</p>
 <h2 id="post-processor-examples">Post processor examples</h2>
-<h3 id="symfony-parameterbag-post-processor">Symfony ParameterBag Post Processor</h3>
+<h3>Symfony ParameterBag Post Processor</h3>
 <p>The following example resolves templated parameters to either other parameters
 within your configuration, or a static set of substitutions. Templated
 parameters have the format <code>%&lt;config_key&gt;%</code>; <code>.</code> characters indicate an
@@ -296,8 +294,7 @@ configuration. We then define additional parameters and pass them to a
 Symfony DI <code>ParameterBag</code>, which we develop a closure over. This closure checks
 for parameters in the passed configuration itself, and then attempts to resolve
 all configuration values based on the parameters in the <code>ParameterBag</code>.</p>
-<pre class="codehilite"><code class="language-php">
-$provider = [
+<p> <pre class=codehilite><code class=language-php>$provider = [
     function () {
         return [
             'session' =&gt; [
@@ -335,33 +332,31 @@ $aggregator = new ConfigAggregator($provider, null, [
     $resolver,
 ]);
 
-var_dump($aggregator-&gt;getMergedConfig());</code></pre>
-
+var_dump($aggregator-&gt;getMergedConfig());</code></pre></p>
 <p>The above would result in the following when complete:</p>
-<pre class="codehilite"><code class="language-php">array(2) {
+<p> <pre class=codehilite><code class=language-php>array(2) {
   'session' =&gt;
   array(1) {
     'cookie_domain' =&gt;
-    string(11) "example.com"
+    string(11) &quot;example.com&quot;
   }
   'tracking' =&gt;
   array(1) {
     'cookie_domain' =&gt;
-    string(11) "example.com"
+    string(11) &quot;example.com&quot;
   }
   'config_parameter_with_percent' =&gt;
-    string(7) "%foo%"
+    string(7) &quot;%foo%&quot;
   }
   'parameters' =&gt;
   array(1) {
     'cookie_domain' =&gt;
-    string(11) "example.com"
+    string(11) &quot;example.com&quot;
   }
-}</code></pre>
-
+}</code></pre></p>
 <p>There is an extension for this feature available via the package
 <a href="https://docs.zendframework.com/zend-config-aggregator-parameters/">zendframework/zend-config-aggregator-parameters</a>:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-config-aggregator-parameters</code></pre>
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-config-aggregator-parameters</code></pre></p>
 
 
 
@@ -395,7 +390,7 @@ var_dump($aggregator-&gt;getMergedConfig());</code></pre>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-config-aggregator/edit/master/docs/config-post-processors.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-config-aggregator/edit/master/docs/book/config-post-processors.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

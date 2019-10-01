@@ -240,7 +240,7 @@ using many configuration files. As such, zend-config-aggregator also
 provides the ability to enable a filesystem-based configuration cache.</p>
 <p>To enable the configuration cache, pass a cache file name as the second
 parameter to the <code>ConfigAggregator</code> constructor:</p>
-<pre class="codehilite"><code class="language-php">use Zend\ConfigAggregator\ArrayProvider;
+<p> <pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ArrayProvider;
 use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregator\PhpFileProvider;
 
@@ -250,8 +250,7 @@ $aggregator = new ConfigAggregator(
         new PhpFileProvider('*.global.php'),
     ],
     'data/config-cache.php'
-);</code></pre>
-
+);</code></pre></p>
 <p>When a cache file is specified, you will also need to add the
 <code>config_cache_enabled</code> key (which you can also specify via the
 <code>ConfigAggregator::ENABLE_CACHE</code> constant) somewhere within one of your
@@ -260,13 +259,12 @@ you were to use the globbing pattern <code>{{,*.}global,{,*.}local}.php</code> (
 with the <code>PhpFileProvider</code>, you could drop a file named <code>enable-cache.local.php</code>
 into your production deployment with the following contents in order to enable
 configuration caching in production:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 use Zend\ConfigAggregator\ConfigAggregator;
 
 return [
     ConfigAggregator::ENABLE_CACHE =&gt; true,
-];</code></pre>
-
+];</code></pre></p>
 <p>When caching is enabled, the <code>ConfigAggregator</code> does not iterate config
 providers. Because of that it is very fast, but after it is enabled, you cannot
 make any changes to configuration without clearing the cache. <strong>Caching should
@@ -301,7 +299,7 @@ clear the cache.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-config-aggregator/edit/master/docs/caching.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-config-aggregator/edit/master/docs/book/caching.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>
