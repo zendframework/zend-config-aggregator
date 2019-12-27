@@ -2,31 +2,11 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.2.0 - TBD
+## 1.2.0 - 2019-12-27
 
 ### Added
 
 - [#23](https://github.com/zendframework/zend-config-aggregator/pull/23) adds the ability to specify the file mode for the generated cache file, when generating a cache file. The mode can be provided via the `Zend\ConfigAggregator\ConfigAggregator::CACHE_FILEMODE` configuration option. Modes should be expressed as octal values (e.g., `0600`).
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
-
-## 1.1.2 - TBD
-
-### Added
 
 - [#21](https://github.com/zendframework/zend-config-aggregator/pull/21) adds support for PHP 7.3.
 
