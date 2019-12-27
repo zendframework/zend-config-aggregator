@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#23](https://github.com/zendframework/zend-config-aggregator/pull/23) adds the ability to specify the file mode for the generated cache file, when generating a cache file. The mode can be provided as the third option to the `ConfigAggregator` constructor, or via the `Zend\ConfigAggregator\ConfigAggregator::CACHE_FILEMODE` configuration option. Modes should be expressed as octal values (e.g., `0640`).
+- [#23](https://github.com/zendframework/zend-config-aggregator/pull/23) adds the ability to specify the file mode for the generated cache file, when generating a cache file. The mode can be provided via the `Zend\ConfigAggregator\ConfigAggregator::CACHE_FILEMODE` configuration option. Modes should be expressed as octal values (e.g., `0600`).
 
 ### Changed
 

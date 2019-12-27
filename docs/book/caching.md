@@ -59,12 +59,11 @@ $aggregator = new ConfigAggregator(
     [
         new ArrayProvider([
             ConfigAggregator::ENABLE_CACHE => true,
-            ConfigAggregator::CACHE_FILEMODE => 0600
+            ConfigAggregator::CACHE_FILEMODE => 0600 // only owner can read and write
         ]),
         new PhpFileProvider('*.global.php'),
     ],
-    'data/config-cache.php',
-    0600 // only owner can read and write
+    'data/config-cache.php'
 );
 ```
 
