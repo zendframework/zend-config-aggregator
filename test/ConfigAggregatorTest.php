@@ -8,8 +8,8 @@
 
 namespace ZendTest\ConfigAggregator;
 
-use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 use stdClass;
 use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregator\InvalidConfigProcessorException;
@@ -23,6 +23,30 @@ use function var_export;
 
 class ConfigAggregatorTest extends TestCase
 {
+    private $cacheFile;
+    private $defaultFile;
+    private $lockFile;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $dir = sys_get_temp_dir() . '/expressive_config_loader';
+        if (! is_dir($dir)) {
+            mkdir($dir);
+        }
+        $this->cacheFile = $dir . '/cache';
+        $this->defaultFile = $dir . '/default';
+        $this->lockFile = sys_get_temp_dir() . '/' . basename($this->cacheFile) . '.tmp';
+    }
+
+    protected function tearDown()
+    {
+        @unlink($this->cacheFile);
+        @unlink($this->defaultFile);
+        @unlink($this->lockFile);
+        @rmdir(dirname($this->cacheFile));
+    }
+
     public function testConfigAggregatorRisesExceptionIfProviderClassDoesNotExist()
     {
         $this->expectException(InvalidConfigProviderException::class);
@@ -67,17 +91,82 @@ class ConfigAggregatorTest extends TestCase
 
     public function testConfigAggregatorCanCacheConfig()
     {
-        vfsStream::setup(__FUNCTION__);
-        $cacheFile = vfsStream::url(__FUNCTION__) . '/expressive_config_loader';
         new ConfigAggregator([
             function () {
                 return ['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true];
             }
-        ], $cacheFile);
-        $this->assertTrue(file_exists($cacheFile));
-        $cachedConfig = include $cacheFile;
+        ], $this->cacheFile);
+        $this->assertTrue(file_exists($this->cacheFile));
+        $cachedConfig = include $this->cacheFile;
         $this->assertInternalType('array', $cachedConfig);
         $this->assertEquals(['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true], $cachedConfig);
+    }
+
+    public function testConfigAggregatorSetsDefaultModeOnCache()
+    {
+        touch($this->defaultFile);
+        new ConfigAggregator([
+            function () {
+                return ['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true];
+            }
+        ], $this->cacheFile);
+        $this->assertEquals(fileperms($this->defaultFile), fileperms($this->cacheFile));
+    }
+
+    public function testConfigAggregatorSetsModeOnCache()
+    {
+        new ConfigAggregator([
+            function () {
+                return [
+                    'foo' => 'bar',
+                    ConfigAggregator::ENABLE_CACHE => true,
+                    ConfigAggregator::CACHE_FILEMODE => 0600
+                ];
+            }
+        ], $this->cacheFile);
+        $this->assertEquals(0600, fileperms($this->cacheFile) & 0777);
+    }
+
+    public function testConfigAggregatorSetsHandlesUnwritableCache()
+    {
+        chmod(dirname($this->cacheFile), 0400);
+
+        $foo = function () {
+            new ConfigAggregator([
+                function () {
+                    return ['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true];
+                }
+            ], $this->cacheFile);
+        };
+        @$foo(); // suppress warning
+
+        $errors = error_get_last();
+        $this->assertNotNull($errors);
+        $this->assertFalse(file_exists($this->cacheFile));
+    }
+
+    public function testConfigAggregatorRespectsCacheLock()
+    {
+        $expected = [
+            'cache' => 'locked',
+            ConfigAggregator::ENABLE_CACHE => true,
+        ];
+
+        $fh = fopen($this->lockFile, 'c');
+        flock($fh, LOCK_EX);
+        file_put_contents($this->cacheFile, '<' . '?php return ' . var_export($expected, true) . ';');
+
+        $method = new ReflectionMethod(ConfigAggregator::class, 'cacheConfig');
+        $method->setAccessible(true);
+        $method->invoke(
+            new ConfigAggregator(),
+            ['foo' => 'bar', ConfigAggregator::ENABLE_CACHE => true],
+            $this->cacheFile
+        );
+        flock($fh, LOCK_UN);
+        fclose($fh);
+
+        $this->assertEquals($expected, require $this->cacheFile);
     }
 
     public function testConfigAggregatorCanLoadConfigFromCache()
@@ -87,13 +176,9 @@ class ConfigAggregatorTest extends TestCase
             ConfigAggregator::ENABLE_CACHE => true,
         ];
 
-        $root = vfsStream::setup(__FUNCTION__);
-        vfsStream::newFile('expressive_config_loader')
-            ->at($root)
-            ->setContent('<' . '?php return ' . var_export($expected, true) . ';');
-        $cacheFile = vfsStream::url(__FUNCTION__ . '/expressive_config_loader');
+        file_put_contents($this->cacheFile, '<' . '?php return ' . var_export($expected, true) . ';');
 
-        $aggregator = new ConfigAggregator([], $cacheFile);
+        $aggregator = new ConfigAggregator([], $this->cacheFile);
         $mergedConfig = $aggregator->getMergedConfig();
 
         $this->assertInternalType('array', $mergedConfig);
