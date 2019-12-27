@@ -249,13 +249,13 @@
 <p>The <code>ConfigAggregator</code> works by aggregating "config providers" passed to its
 constructor.  Each provider should be a callable, returning a configuration
 array (or a PHP generator) to be merged.</p>
-<p> <pre class=codehilite><code class=language-php>$aggregator = new ConfigAggregator([
+<pre class=codehilite><code class=language-php>$aggregator = new ConfigAggregator([
     function () {
         return ['foo' =&gt; 'bar'];
     },
     new PhpFileProvider('*.global.php'),
 ]);
-var_dump($aggregator-&gt;getMergedConfig());</code></pre></p>
+var_dump($aggregator-&gt;getMergedConfig());</code></pre>
 <p>If the provider is a class name, the aggregator automatically instantiates it
 before invoking it; as such, any class name you use as a config provider <em>must</em>
 also define <code>__invoke()</code>, and that method <em>must</em> return an array.</p>
@@ -265,7 +265,7 @@ will be available to your application.</p>
 <p>As a library owner, you can distribute your own configuration providers that
 provide default values for use with your library.</p>
 <p>As an example:</p>
-<p> <pre class=codehilite><code class=language-php>class ApplicationConfig
+<pre class=codehilite><code class=language-php>class ApplicationConfig
 {
     public function __invoke()
     {
@@ -277,9 +277,9 @@ $aggregator = new ConfigAggregator([
     ApplicationConfig::class,
     new PhpFileProvider('*.global.php'),
 ]);
-var_dump($aggregator-&gt;getMergedConfig());</code></pre></p>
+var_dump($aggregator-&gt;getMergedConfig());</code></pre>
 <p>Output from both examples will be the same:</p>
-<p> <pre class=codehilite><code class=language-php>array(4) {
+<pre class=codehilite><code class=language-php>array(4) {
   'foo' =&gt;
   string(3) &quot;bar&quot;
   'db' =&gt;
@@ -292,11 +292,11 @@ var_dump($aggregator-&gt;getMergedConfig());</code></pre></p>
   'redis' =&gt;
   array(0) {
   }
-}</code></pre></p>
+}</code></pre>
 <h3>Generators</h3>
 <p>Config providers can be written as generators. This way, a single callable can
 provide multiple configurations:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ConfigAggregator;
+<pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\Stdlib\Glob;
 
 $aggregator = new ConfigAggregator([
@@ -306,25 +306,25 @@ $aggregator = new ConfigAggregator([
         }
     },
 ]);
-var_dump($aggregator-&gt;getMergedConfig());</code></pre></p>
+var_dump($aggregator-&gt;getMergedConfig());</code></pre>
 <p>The <code>PhpFileProvider</code> is implemented as a generator.</p>
 <h2 id="available-config-providers">Available config providers</h2>
 <h3>PhpFileProvider</h3>
 <p>Loads configuration from PHP files returning arrays, such as this one:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'db' =&gt; [
         'dsn' =&gt; 'mysql:...',
     ],
-];</code></pre></p>
+];</code></pre>
 <p>Wildcards are supported:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ConfigAggregator;
+<pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregator\PhpFileProvider;
 
 $aggregator = new ConfigAggregator(
     [
         new PhpFileProvider('config/*.global.php'),
     ]
-);</code></pre></p>
+);</code></pre>
 <p>The example above will merge all matching files from the <code>config/</code> directory. If
 you have files such as <code>app.global.php</code> or <code>database.global.php</code> in that
 directory, they will be loaded using this above lines of code.</p>
@@ -339,9 +339,9 @@ utilize this feature.</p>
 configuration from multiple files of different formats, such as INI, JSON, YAML,
 or XML.  zend-config-aggregator allows you to do so via its
 <code>ZendConfigProvider</code>. This feature requires first installing zend-config:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-config</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-config</code></pre>
 <p>Once installed, you may use as many <code>ZendConfigProvider</code> instances as you need:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ConfigAggregator;
+<pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregator\ZendConfigProvider;
 
 $aggregator = new ConfigAggregator(
@@ -349,13 +349,13 @@ $aggregator = new ConfigAggregator(
         new ZendConfigProvider('*.global.json'),
         new ZendConfigProvider('database.local.ini'),
     ]
-);</code></pre></p>
+);</code></pre>
 <p>These could even be combined into a single glob statement:</p>
-<p> <pre class=codehilite><code class=language-php>$aggregator = new ConfigAggregator(
+<pre class=codehilite><code class=language-php>$aggregator = new ConfigAggregator(
     [
         new ZendConfigProvider('*.global.json,database.local.ini'),
     ]
-);</code></pre></p>
+);</code></pre>
 <p><code>ZendConfigProvider</code> accepts wildcards and globs, and autodetects the config
 type based on file extension.</p>
 <p>Some config readers (in particular, YAML) may need additional dependencies;
@@ -369,15 +369,15 @@ This provider introspects the module class for its <code>Module::getConfig()</co
 as well as its <code>Module::getServiceConfig()</code> method (declared via the
 <code>ServiceProviderInterface</code>).</p>
 <p>To use the extension, first install its package:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-config-aggregator-modulemanager</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-config-aggregator-modulemanager</code></pre>
 <p>Once installed, you may use as many <code>ZendModuleProvider</code> instances as you need:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ConfigAggregator;
+<pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregatorModuleManager\ZendModuleProvider;
 use ACME;
 
 $aggregator = new ConfigAggregator([
     new ZendModuleProvider(new ACME\Module()),
-]);</code></pre></p>
+]);</code></pre>
 <p><code>ZendModuleProvider</code> accepts any object which represents a <code>zend-mvc</code> module.
 For more details, please refer to the <a href="https://docs.zendframework.com/zend-config-aggregator-modulemanager/">zend-config-aggregator-modulemanager manual</a>.</p>
 

@@ -250,7 +250,7 @@
 aggregating "config processors" passed to its constructor. Each processor
 should be a PHP <code>callable</code> which consumes the merged configuration as its sole
 argument, and which then returns the processed configuration array.</p>
-<p> <pre class=codehilite><code class=language-php>$providers = [
+<pre class=codehilite><code class=language-php>$providers = [
     function () {
         return ['foo' =&gt; 'bar'];
     },
@@ -264,14 +264,14 @@ $processors = [
 ];
 
 $aggregator = new ConfigAggregator($providers, null, $processors);
-var_dump($aggregator-&gt;getMergedConfig());</code></pre></p>
+var_dump($aggregator-&gt;getMergedConfig());</code></pre>
 <p>Output from the example:</p>
-<p> <pre class=codehilite><code class=language-php>array(2) {
+<pre class=codehilite><code class=language-php>array(2) {
   'foo' =&gt;
   string(3) &quot;bar&quot;
   'post-processed' =&gt;
   bool(true)
-}</code></pre></p>
+}</code></pre>
 <p>If the processor is a class name, the aggregator automatically instantiates it
 before invoking it; as such, any class name you use as a config provider
 <strong>must</strong> also define <code>__invoke()</code>, and that method <strong>must</strong> return an array and
@@ -294,7 +294,7 @@ configuration. We then define additional parameters and pass them to a
 Symfony DI <code>ParameterBag</code>, which we develop a closure over. This closure checks
 for parameters in the passed configuration itself, and then attempts to resolve
 all configuration values based on the parameters in the <code>ParameterBag</code>.</p>
-<p> <pre class=codehilite><code class=language-php>$provider = [
+<pre class=codehilite><code class=language-php>$provider = [
     function () {
         return [
             'session' =&gt; [
@@ -332,9 +332,9 @@ $aggregator = new ConfigAggregator($provider, null, [
     $resolver,
 ]);
 
-var_dump($aggregator-&gt;getMergedConfig());</code></pre></p>
+var_dump($aggregator-&gt;getMergedConfig());</code></pre>
 <p>The above would result in the following when complete:</p>
-<p> <pre class=codehilite><code class=language-php>array(2) {
+<pre class=codehilite><code class=language-php>array(2) {
   'session' =&gt;
   array(1) {
     'cookie_domain' =&gt;
@@ -353,10 +353,10 @@ var_dump($aggregator-&gt;getMergedConfig());</code></pre></p>
     'cookie_domain' =&gt;
     string(11) &quot;example.com&quot;
   }
-}</code></pre></p>
+}</code></pre>
 <p>There is an extension for this feature available via the package
 <a href="https://docs.zendframework.com/zend-config-aggregator-parameters/">zendframework/zend-config-aggregator-parameters</a>:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-config-aggregator-parameters</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-config-aggregator-parameters</code></pre>
 
 
 

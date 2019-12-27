@@ -240,7 +240,7 @@ using many configuration files. As such, zend-config-aggregator also
 provides the ability to enable a filesystem-based configuration cache.</p>
 <p>To enable the configuration cache, pass a cache file name as the second
 parameter to the <code>ConfigAggregator</code> constructor:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ArrayProvider;
+<pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ArrayProvider;
 use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregator\PhpFileProvider;
 
@@ -250,7 +250,7 @@ $aggregator = new ConfigAggregator(
         new PhpFileProvider('*.global.php'),
     ],
     'data/config-cache.php'
-);</code></pre></p>
+);</code></pre>
 <p>When a cache file is specified, you will also need to add the
 <code>config_cache_enabled</code> key (which you can also specify via the
 <code>ConfigAggregator::ENABLE_CACHE</code> constant) somewhere within one of your
@@ -259,17 +259,37 @@ you were to use the globbing pattern <code>{{,*.}global,{,*.}local}.php</code> (
 with the <code>PhpFileProvider</code>, you could drop a file named <code>enable-cache.local.php</code>
 into your production deployment with the following contents in order to enable
 configuration caching in production:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;?php
+<pre class=codehilite><code class=language-php>&lt;?php
 use Zend\ConfigAggregator\ConfigAggregator;
 
 return [
     ConfigAggregator::ENABLE_CACHE =&gt; true,
-];</code></pre></p>
+];</code></pre>
 <p>When caching is enabled, the <code>ConfigAggregator</code> does not iterate config
 providers. Because of that it is very fast, but after it is enabled, you cannot
 make any changes to configuration without clearing the cache. <strong>Caching should
 be used only in a production environment</strong>, and your deployment process should
 clear the cache.</p>
+<p>You can control the permissions used when creating the cache file by passing
+the <a href="http://php.net/manual/en/function.chmod.php">file mode</a> in the
+<code>ConfigAggregator::CACHE_FILEMODE</code> configuration. Use this if your config
+contains sensitive information such as database passwords:</p>
+<pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ArrayProvider;
+use Zend\ConfigAggregator\ConfigAggregator;
+use Zend\ConfigAggregator\PhpFileProvider;
+
+$aggregator = new ConfigAggregator(
+    [
+        new ArrayProvider([
+            ConfigAggregator::ENABLE_CACHE =&gt; true,
+            ConfigAggregator::CACHE_FILEMODE =&gt; 0600 // only owner can read and write
+        ]),
+        new PhpFileProvider('*.global.php'),
+    ],
+    'data/config-cache.php'
+);</code></pre>
+<p>Note that mode is an octal value. To ensure the expected operation, you need
+to prefix the file mode with a zero (e.g. <code>0644</code>).</p>
 
 
 
