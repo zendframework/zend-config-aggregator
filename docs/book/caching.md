@@ -45,9 +45,10 @@ make any changes to configuration without clearing the cache. **Caching should
 be used only in a production environment**, and your deployment process should
 clear the cache.
 
-You can control the permissions used when creating the cache file by passing 
-the [file mode] in the `ConfigAggregator::CACHE_FILEMODE` configuration. Use 
-this if your config contains sensitive information such as database passwords:
+You can control the permissions used when creating the cache file by passing
+the [file mode](http://php.net/manual/en/function.chmod.php) in the
+`ConfigAggregator::CACHE_FILEMODE` configuration. Use this if your config
+contains sensitive information such as database passwords:
 
 ```php
 use Zend\ConfigAggregator\ArrayProvider;
@@ -67,7 +68,5 @@ $aggregator = new ConfigAggregator(
 );
 ```
 
-Note that mode is an octal value. To to ensure the expected operation, you need 
-to prefix mode with a zero (eg 0644).
-
-[file mode]: http://php.net/manual/en/function.chmod.php
+Note that mode is an octal value. To ensure the expected operation, you need
+to prefix the file mode with a zero (e.g. `0644`).
