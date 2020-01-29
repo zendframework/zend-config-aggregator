@@ -7,12 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Lightweight library for collecting and merging configuration from different sources.">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-config-aggregator/config-providers/">
+    <link rel="canonical" href="https://docs.zendframework.com/config-providers/">
     <link rel="shortcut icon" href="../img/favicon.ico">
 
     <title>Config Providers - zend-config-aggregator - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../css/styles-5cfabd53ee.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body id="page-top">
 
@@ -188,9 +188,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.laminas.dev/laminas-config-aggregator/">laminas/laminas-config-aggregator.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -249,13 +249,15 @@
 <p>The <code>ConfigAggregator</code> works by aggregating "config providers" passed to its
 constructor.  Each provider should be a callable, returning a configuration
 array (or a PHP generator) to be merged.</p>
-<pre class=codehilite><code class=language-php>$aggregator = new ConfigAggregator([
+<pre><code class="language-php">$aggregator = new ConfigAggregator([
     function () {
         return ['foo' =&gt; 'bar'];
     },
     new PhpFileProvider('*.global.php'),
 ]);
-var_dump($aggregator-&gt;getMergedConfig());</code></pre>
+var_dump($aggregator-&gt;getMergedConfig());
+</code></pre>
+
 <p>If the provider is a class name, the aggregator automatically instantiates it
 before invoking it; as such, any class name you use as a config provider <em>must</em>
 also define <code>__invoke()</code>, and that method <em>must</em> return an array.</p>
@@ -265,7 +267,7 @@ will be available to your application.</p>
 <p>As a library owner, you can distribute your own configuration providers that
 provide default values for use with your library.</p>
 <p>As an example:</p>
-<pre class=codehilite><code class=language-php>class ApplicationConfig
+<pre><code class="language-php">class ApplicationConfig
 {
     public function __invoke()
     {
@@ -277,9 +279,11 @@ $aggregator = new ConfigAggregator([
     ApplicationConfig::class,
     new PhpFileProvider('*.global.php'),
 ]);
-var_dump($aggregator-&gt;getMergedConfig());</code></pre>
+var_dump($aggregator-&gt;getMergedConfig());
+</code></pre>
+
 <p>Output from both examples will be the same:</p>
-<pre class=codehilite><code class=language-php>array(4) {
+<pre><code class="language-php">array(4) {
   'foo' =&gt;
   string(3) &quot;bar&quot;
   'db' =&gt;
@@ -292,11 +296,13 @@ var_dump($aggregator-&gt;getMergedConfig());</code></pre>
   'redis' =&gt;
   array(0) {
   }
-}</code></pre>
+}
+</code></pre>
+
 <h3>Generators</h3>
 <p>Config providers can be written as generators. This way, a single callable can
 provide multiple configurations:</p>
-<pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ConfigAggregator;
+<pre><code class="language-php">use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\Stdlib\Glob;
 
 $aggregator = new ConfigAggregator([
@@ -306,25 +312,31 @@ $aggregator = new ConfigAggregator([
         }
     },
 ]);
-var_dump($aggregator-&gt;getMergedConfig());</code></pre>
+var_dump($aggregator-&gt;getMergedConfig());
+</code></pre>
+
 <p>The <code>PhpFileProvider</code> is implemented as a generator.</p>
 <h2 id="available-config-providers">Available config providers</h2>
 <h3>PhpFileProvider</h3>
 <p>Loads configuration from PHP files returning arrays, such as this one:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'db' =&gt; [
         'dsn' =&gt; 'mysql:...',
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>Wildcards are supported:</p>
-<pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ConfigAggregator;
+<pre><code class="language-php">use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregator\PhpFileProvider;
 
 $aggregator = new ConfigAggregator(
     [
         new PhpFileProvider('config/*.global.php'),
     ]
-);</code></pre>
+);
+</code></pre>
+
 <p>The example above will merge all matching files from the <code>config/</code> directory. If
 you have files such as <code>app.global.php</code> or <code>database.global.php</code> in that
 directory, they will be loaded using this above lines of code.</p>
@@ -339,9 +351,11 @@ utilize this feature.</p>
 configuration from multiple files of different formats, such as INI, JSON, YAML,
 or XML.  zend-config-aggregator allows you to do so via its
 <code>ZendConfigProvider</code>. This feature requires first installing zend-config:</p>
-<pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-config</code></pre>
+<pre><code class="language-bash">$ composer require zendframework/zend-config
+</code></pre>
+
 <p>Once installed, you may use as many <code>ZendConfigProvider</code> instances as you need:</p>
-<pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ConfigAggregator;
+<pre><code class="language-php">use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregator\ZendConfigProvider;
 
 $aggregator = new ConfigAggregator(
@@ -349,13 +363,17 @@ $aggregator = new ConfigAggregator(
         new ZendConfigProvider('*.global.json'),
         new ZendConfigProvider('database.local.ini'),
     ]
-);</code></pre>
+);
+</code></pre>
+
 <p>These could even be combined into a single glob statement:</p>
-<pre class=codehilite><code class=language-php>$aggregator = new ConfigAggregator(
+<pre><code class="language-php">$aggregator = new ConfigAggregator(
     [
         new ZendConfigProvider('*.global.json,database.local.ini'),
     ]
-);</code></pre>
+);
+</code></pre>
+
 <p><code>ZendConfigProvider</code> accepts wildcards and globs, and autodetects the config
 type based on file extension.</p>
 <p>Some config readers (in particular, YAML) may need additional dependencies;
@@ -369,15 +387,19 @@ This provider introspects the module class for its <code>Module::getConfig()</co
 as well as its <code>Module::getServiceConfig()</code> method (declared via the
 <code>ServiceProviderInterface</code>).</p>
 <p>To use the extension, first install its package:</p>
-<pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-config-aggregator-modulemanager</code></pre>
+<pre><code class="language-bash">$ composer require zendframework/zend-config-aggregator-modulemanager
+</code></pre>
+
 <p>Once installed, you may use as many <code>ZendModuleProvider</code> instances as you need:</p>
-<pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ConfigAggregator;
+<pre><code class="language-php">use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregatorModuleManager\ZendModuleProvider;
 use ACME;
 
 $aggregator = new ConfigAggregator([
     new ZendModuleProvider(new ACME\Module()),
-]);</code></pre>
+]);
+</code></pre>
+
 <p><code>ZendModuleProvider</code> accepts any object which represents a <code>zend-mvc</code> module.
 For more details, please refer to the <a href="https://docs.zendframework.com/zend-config-aggregator-modulemanager/">zend-config-aggregator-modulemanager manual</a>.</p>
 
@@ -534,7 +556,7 @@ For more details, please refer to the <a href="https://docs.zendframework.com/ze
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -542,10 +564,10 @@ For more details, please refer to the <a href="https://docs.zendframework.com/ze
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -553,27 +575,28 @@ For more details, please refer to the <a href="https://docs.zendframework.com/ze
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '..',
             siteName = 'zend-config-aggregator';
     </script>
-    <script src="../js/scripts-8d7ae56abf.js"></script>
-        <script src="../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

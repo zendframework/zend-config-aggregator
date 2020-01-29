@@ -7,12 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Lightweight library for collecting and merging configuration from different sources.">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-config-aggregator/caching/">
+    <link rel="canonical" href="https://docs.zendframework.com/caching/">
     <link rel="shortcut icon" href="../img/favicon.ico">
 
     <title>Caching - zend-config-aggregator - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../css/styles-5cfabd53ee.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body id="page-top">
 
@@ -188,9 +188,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.laminas.dev/laminas-config-aggregator/">laminas/laminas-config-aggregator.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -240,7 +240,7 @@ using many configuration files. As such, zend-config-aggregator also
 provides the ability to enable a filesystem-based configuration cache.</p>
 <p>To enable the configuration cache, pass a cache file name as the second
 parameter to the <code>ConfigAggregator</code> constructor:</p>
-<pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ArrayProvider;
+<pre><code class="language-php">use Zend\ConfigAggregator\ArrayProvider;
 use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregator\PhpFileProvider;
 
@@ -250,7 +250,9 @@ $aggregator = new ConfigAggregator(
         new PhpFileProvider('*.global.php'),
     ],
     'data/config-cache.php'
-);</code></pre>
+);
+</code></pre>
+
 <p>When a cache file is specified, you will also need to add the
 <code>config_cache_enabled</code> key (which you can also specify via the
 <code>ConfigAggregator::ENABLE_CACHE</code> constant) somewhere within one of your
@@ -259,12 +261,14 @@ you were to use the globbing pattern <code>{{,*.}global,{,*.}local}.php</code> (
 with the <code>PhpFileProvider</code>, you could drop a file named <code>enable-cache.local.php</code>
 into your production deployment with the following contents in order to enable
 configuration caching in production:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 use Zend\ConfigAggregator\ConfigAggregator;
 
 return [
     ConfigAggregator::ENABLE_CACHE =&gt; true,
-];</code></pre>
+];
+</code></pre>
+
 <p>When caching is enabled, the <code>ConfigAggregator</code> does not iterate config
 providers. Because of that it is very fast, but after it is enabled, you cannot
 make any changes to configuration without clearing the cache. <strong>Caching should
@@ -274,7 +278,7 @@ clear the cache.</p>
 the <a href="http://php.net/manual/en/function.chmod.php">file mode</a> in the
 <code>ConfigAggregator::CACHE_FILEMODE</code> configuration. Use this if your config
 contains sensitive information such as database passwords:</p>
-<pre class=codehilite><code class=language-php>use Zend\ConfigAggregator\ArrayProvider;
+<pre><code class="language-php">use Zend\ConfigAggregator\ArrayProvider;
 use Zend\ConfigAggregator\ConfigAggregator;
 use Zend\ConfigAggregator\PhpFileProvider;
 
@@ -287,7 +291,9 @@ $aggregator = new ConfigAggregator(
         new PhpFileProvider('*.global.php'),
     ],
     'data/config-cache.php'
-);</code></pre>
+);
+</code></pre>
+
 <p>Note that mode is an octal value. To ensure the expected operation, you need
 to prefix the file mode with a zero (e.g. <code>0644</code>).</p>
 
@@ -440,7 +446,7 @@ to prefix the file mode with a zero (e.g. <code>0644</code>).</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -448,10 +454,10 @@ to prefix the file mode with a zero (e.g. <code>0644</code>).</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -459,27 +465,28 @@ to prefix the file mode with a zero (e.g. <code>0644</code>).</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '..',
             siteName = 'zend-config-aggregator';
     </script>
-    <script src="../js/scripts-8d7ae56abf.js"></script>
-        <script src="../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
